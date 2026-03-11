@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagrama Radial — Estructura ECU en IVS</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --charcoal: #2C2C2C;
+    --cream: #FDF8F4;
+    --gold: #C9A84C;
+    --gold-light: #E8D49A;
+    --rose-dark: #B87878;
+    --rose-pale: #F5EAEA;
+    --rose: #D4A5A5;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--cream);
+    font-family: var(--font-body);
+    display: flex; flex-direction: column; align-items: center;
+    padding: 40px 20px 60px;
+    min-height: 100vh;
+  }
+  header { text-align: center; margin-bottom: 36px; }
+  .header-ornament { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 14px; }
+  .ornament-line { width: 50px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .ornament-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
+  .ornament-diamond { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); }
+  .header-label { font-size: 10px; font-weight: 500; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  header h1 { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--charcoal); margin-bottom: 6px; }
+  header p { font-size: 12px; color: #5A5A5A; font-weight: 300; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+
+  .diagram-wrap {
+    width: 100%; max-width: 780px;
+    background: #fff;
+    border: 1px solid #EAE0D8;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 32px rgba(44,44,44,0.06);
+  }
+
+  svg { width: 100%; height: auto; overflow: visible; }
+
+  /* Tooltip */
+  .tip {
+    position: fixed; display: none;
+    background: var(--charcoal); color: #fff;
+    border-radius: 6px; padding: 10px 14px;
+    font-size: 11.5px; line-height: 1.6;
+    width: 220px; z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    pointer-events: none;
+    font-family: var(--font-body);
+  }
+  .tip strong { color: var(--gold-light); display: block; margin-bottom: 3px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+
+  .legend {
+    width: 100%; max-width: 780px;
+    display: flex; gap: 10px; flex-wrap: wrap;
+    justify-content: center; margin-top: 20px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #5A5A5A; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+  .legend-circle { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+
+  footer { margin-top: 36px; display: flex; align-items: center; gap: 12px; font-size: 10px; color: #5A5A5A; letter-spacing: 2px; text-transform: uppercase; }
+  .footer-line { width: 40px; height: 1px; background: var(--gold); opacity: 0.5; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Figura 3 — Diagrama Radial</div>
+  <div class="header-ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line right"></div>
+  </div>
+  <h1>Estructura de Software ECU en IVS NG</h1>
+  <p>Representación radial de la jerarquía de Placeholders y DIDs construida en la plataforma IVS NG a partir del SWAD emitido por D&R.</p>
+</header>
+
+<div class="diagram-wrap">
+<svg viewBox="0 0 740 700" xmlns="http://www.w3.org/2000/svg" id="svg">
+
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#00000020"/>
+    </filter>
+    <filter id="shadow-sm" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#00000015"/>
+    </filter>
+    <radialGradient id="grad-center" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#D4A5A5"/>
+      <stop offset="100%" stop-color="#B87878"/>
+    </radialGradient>
+    <radialGradient id="grad-gold" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#E8D49A"/>
+      <stop offset="100%" stop-color="#C9A84C"/>
+    </radialGradient>
+    <linearGradient id="ring1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3E3E3E"/>
+      <stop offset="100%" stop-color="#2C2C2C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- cx=370 cy=350 center -->
+
+  <!-- ── RING BACKGROUNDS ── -->
+  <!-- Ring 3 outer glow -->
+  <circle cx="370" cy="350" r="310" fill="#F5EAEA" opacity="0.4"/>
+  <!-- Ring 2 -->
+  <circle cx="370" cy="350" r="220" fill="#FAF5E4" opacity="0.5"/>
+  <!-- Ring 1 -->
+  <circle cx="370" cy="350" r="130" fill="#F0F4F8" opacity="0.6"/>
+
+  <!-- ── CONNECTOR LINES FROM CENTER ── -->
+  <!-- To Assembly (top) -->
+  <line x1="370" y1="310" x2="370" y2="185" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+  <!-- To Core Assembly PH (top-right) -->
+  <line x1="400" y1="320" x2="510" y2="215" stroke="#4A90C4" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+  <!-- To CPU PH (right) -->
+  <line x1="420" y1="350" x2="540" y2="350" stroke="#6BAE8A" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+  <!-- To Part II (bottom-right) -->
+  <line x1="400" y1="380" x2="510" y2="480" stroke="#9AAE4A" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+  <!-- To Part II DID (bottom) -->
+  <line x1="370" y1="390" x2="370" y2="500" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.4"/>
+
+  <!-- CPU PH to its children -->
+  <line x1="600" y1="310" x2="635" y2="175" stroke="#C4874A" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.5"/>
+  <line x1="605" y1="330" x2="650" y2="280" stroke="#C4874A" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.5"/>
+  <line x1="600" y1="370" x2="650" y2="420" stroke="#4AAE7A" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.5"/>
+  <line x1="595" y1="390" x2="635" y2="500" stroke="#AE4A6B" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.5"/>
+  <line x1="585" y1="405" x2="610" y2="560" stroke="#7A8AAE" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.5"/>
+
+  <!-- Assembly to its DIDs -->
+  <line x1="330" y1="155" x2="200" y2="110" stroke="#8A6BAE" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.5"/>
+  <line x1="350" y1="148" x2="290" y2="75" stroke="#AE4A6B" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.5"/>
+  <line x1="390" y1="148" x2="450" y2="75" stroke="#7A8AAE" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.5"/>
+  <line x1="410" y1="155" x2="530" y2="100" stroke="#4AAE9A" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.5"/>
+
+  <!-- ── LEVEL 2 NODES (Placeholders) ── -->
+
+  <!-- Assembly DID (top) — special gold -->
+  <g class="node" data-tip="Assembly|DID integrador del módulo. Agrupa todos los demás DIDs: Core Assembly, Strategy, Base Configuration, Calibration (si aplica) y Part II. Es la vista consolidada desde la que el dealer obtiene el software completo del módulo." style="cursor:pointer">
+    <circle cx="370" cy="165" r="42" fill="url(#grad-gold)" filter="url(#shadow)"/>
+    <circle cx="370" cy="165" r="42" fill="none" stroke="#C9A84C" stroke-width="2"/>
+    <text x="370" y="160" text-anchor="middle" font-family="DM Sans" font-size="11" font-weight="700" fill="#2C2C2C">Assembly</text>
+    <text x="370" y="175" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#5A3A00">DID integrador</text>
+  </g>
+
+  <!-- Core Assembly PH (top-right) -->
+  <g class="node" data-tip="Core Assembly PH|Placeholder que agrupa el hardware del módulo ECU. Contiene el DID de Core Assembly como parte registrada." style="cursor:pointer">
+    <rect x="460" y="175" width="100" height="46" rx="8" fill="#2C2C2C" stroke="#4A90C4" stroke-width="2" filter="url(#shadow-sm)"/>
+    <text x="510" y="196" text-anchor="middle" font-family="DM Sans" font-size="10" font-weight="700" fill="#4A90C4">Core Assembly</text>
+    <text x="510" y="210" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#888">PH</text>
+  </g>
+
+  <!-- CPU PH (right) -->
+  <g class="node" data-tip="CPU PH|Placeholder contenedor de todos los componentes de software ejecutable del módulo. Bajo este nodo se crean los Placeholders de cada DID según lo indicado en el SWAD." style="cursor:pointer">
+    <rect x="545" y="328" width="100" height="46" rx="8" fill="#2C2C2C" stroke="#6BAE8A" stroke-width="2" filter="url(#shadow-sm)"/>
+    <text x="595" y="349" text-anchor="middle" font-family="DM Sans" font-size="10" font-weight="700" fill="#6BAE8A">CPU PH</text>
+    <text x="595" y="363" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#888">Placeholder</text>
+  </g>
+
+  <!-- Part II PH (bottom-right) -->
+  <g class="node" data-tip="Part II PH|Placeholder que contiene el DID de Part II. Presente de forma obligatoria en todos los módulos sin excepción." style="cursor:pointer">
+    <rect x="460" y="458" width="100" height="46" rx="8" fill="#2C2C2C" stroke="#9AAE4A" stroke-width="2" filter="url(#shadow-sm)"/>
+    <text x="510" y="479" text-anchor="middle" font-family="DM Sans" font-size="10" font-weight="700" fill="#9AAE4A">Part II PH</text>
+    <text x="510" y="493" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#888">Siempre presente</text>
+  </g>
+
+  <!-- ── ECU PH CENTER ── -->
+  <g class="node" data-tip="ECU Placeholder (ECU PH)|Primer nodo creado en la estructura. Representa el módulo ECU físico dentro del árbol del vehículo en IVS. Todos los Placeholders y DIDs del módulo se anclan aquí." style="cursor:pointer">
+    <circle cx="370" cy="350" r="68" fill="url(#grad-center)" filter="url(#shadow)"/>
+    <circle cx="370" cy="350" r="68" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.4"/>
+    <text x="370" y="340" text-anchor="middle" font-family="Cormorant Garamond" font-size="15" font-weight="700" fill="#fff">ECU PH</text>
+    <text x="370" y="358" text-anchor="middle" font-family="DM Sans" font-size="9" fill="rgba(255,255,255,0.8)">Placeholder central</text>
+    <text x="370" y="372" text-anchor="middle" font-family="DM Sans" font-size="9" fill="rgba(255,255,255,0.7)">del módulo</text>
+  </g>
+
+  <!-- ── LEVEL 3 NODES (DIDs under CPU PH) ── -->
+
+  <!-- SBL DID -->
+  <g class="node" data-tip="Secondary Bootloader|DID que contiene el software de arranque secundario del módulo ECU. Necesario para la programación correcta del módulo en el vehículo." style="cursor:pointer">
+    <circle cx="648" cy="155" r="34" fill="#3E3E3E" stroke="#C4874A" stroke-width="1.5" filter="url(#shadow-sm)"/>
+    <text x="648" y="150" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#E8C49A">Secondary</text>
+    <text x="648" y="163" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#E8C49A">Bootloader</text>
+  </g>
+
+  <!-- Boot Image DID -->
+  <g class="node" data-tip="Boot Image|DID que contiene la imagen de arranque del módulo. Se carga en la memoria del ECU durante la programación inicial." style="cursor:pointer">
+    <circle cx="668" cy="268" r="30" fill="#3E3E3E" stroke="#C4874A" stroke-width="1.5" filter="url(#shadow-sm)"/>
+    <text x="668" y="263" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#E8C49A">Boot</text>
+    <text x="668" y="276" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#E8C49A">Image</text>
+  </g>
+
+  <!-- Recovery Image DID -->
+  <g class="node" data-tip="Recovery Image|DID que contiene la imagen de recuperación del módulo. Permite restaurar el ECU a un estado funcional en caso de falla durante la programación." style="cursor:pointer">
+    <circle cx="668" cy="432" r="30" fill="#3E3E3E" stroke="#4AAE7A" stroke-width="1.5" filter="url(#shadow-sm)"/>
+    <text x="668" y="427" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#A0EAC0">Recovery</text>
+    <text x="668" y="440" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#A0EAC0">Image</text>
+  </g>
+
+  <!-- Strategy DID -->
+  <g class="node" data-tip="Strategy|DID de mayor relevancia operativa. Contiene el archivo .vbf firmado entregado por el proveedor. Es el software que el dealer descarga desde IVS e instala directamente en el módulo ECU del vehículo." style="cursor:pointer">
+    <circle cx="648" cy="530" r="36" fill="#AE4A6B" stroke="#E8A0B8" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="648" y="525" text-anchor="middle" font-family="DM Sans" font-size="10" font-weight="700" fill="#fff">Strategy</text>
+    <text x="648" y="539" text-anchor="middle" font-family="DM Sans" font-size="8" fill="rgba(255,255,255,0.8)">.vbf</text>
+  </g>
+
+  <!-- Base Config + Calibration (optional) -->
+  <g class="node" data-tip="Base Configuration / Calibration|DIDs opcionales cuya presencia depende de lo especificado en el SWAD. No todos los módulos los requieren." style="cursor:pointer">
+    <circle cx="625" cy="600" r="30" fill="#3E3E3E" stroke="#7A8AAE" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#shadow-sm)"/>
+    <text x="625" y="595" text-anchor="middle" font-family="DM Sans" font-size="8" font-weight="600" fill="#B0BCDD">Base Config /</text>
+    <text x="625" y="607" text-anchor="middle" font-family="DM Sans" font-size="8" font-weight="600" fill="#B0BCDD">Calibration</text>
+    <!-- Optional badge -->
+    <rect x="588" y="627" width="74" height="15" rx="7" fill="#F5EAEA" stroke="#B87878" stroke-width="1"/>
+    <text x="625" y="638" text-anchor="middle" font-family="DM Sans" font-size="8" font-weight="600" fill="#B87878">OPCIONAL</text>
+  </g>
+
+  <!-- ── LEVEL 3 NODES (DIDs under Assembly) ── -->
+
+  <!-- Core Assembly DID -->
+  <g class="node" data-tip="Core Assembly|DID que identifica el hardware físico del módulo ECU. Su número de parte proviene del SWAD emitido por D&R." style="cursor:pointer">
+    <circle cx="195" cy="100" r="30" fill="#3E3E3E" stroke="#4A90C4" stroke-width="1.5" filter="url(#shadow-sm)"/>
+    <text x="195" y="95" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#A0C8E8">Core</text>
+    <text x="195" y="108" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#A0C8E8">Assembly</text>
+  </g>
+
+  <!-- Strategy DID (in Assembly) -->
+  <g class="node" data-tip="Strategy (en Assembly)|El mismo DID de Strategy referenciado desde el Assembly, consolidando el archivo .vbf dentro del ensamble completo del módulo." style="cursor:pointer">
+    <circle cx="290" cy="62" r="28" fill="#AE4A6B" stroke="#E8A0B8" stroke-width="1.5" filter="url(#shadow-sm)"/>
+    <text x="290" y="57" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#fff">Strategy</text>
+    <text x="290" y="70" text-anchor="middle" font-family="DM Sans" font-size="8" fill="rgba(255,255,255,0.8)">.vbf</text>
+  </g>
+
+  <!-- Base Config in Assembly -->
+  <g class="node" data-tip="Base Configuration (en Assembly)|DID opcional referenciado desde el Assembly cuando el módulo lo requiere según el SWAD." style="cursor:pointer">
+    <circle cx="450" cy="62" r="28" fill="#3E3E3E" stroke="#7A8AAE" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#shadow-sm)"/>
+    <text x="450" y="57" text-anchor="middle" font-family="DM Sans" font-size="8" font-weight="600" fill="#B0BCDD">Base</text>
+    <text x="450" y="70" text-anchor="middle" font-family="DM Sans" font-size="8" font-weight="600" fill="#B0BCDD">Config</text>
+  </g>
+
+  <!-- Part II in Assembly -->
+  <g class="node" data-tip="Part II (en Assembly)|DID obligatorio en todos los módulos. Contiene el archivo .mdx con información complementaria de identificación del software." style="cursor:pointer">
+    <circle cx="542" cy="95" r="28" fill="#3E3E3E" stroke="#9AAE4A" stroke-width="1.5" filter="url(#shadow-sm)"/>
+    <text x="542" y="90" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#D0E890">Part II</text>
+    <text x="542" y="103" text-anchor="middle" font-family="DM Sans" font-size="8" fill="#A0B860">.mdx</text>
+  </g>
+
+  <!-- Part II standalone DID (bottom) -->
+  <g class="node" data-tip="Part II|DID obligatorio presente en todos los módulos sin excepción. Contiene el archivo .mdx con información complementaria de identificación del software." style="cursor:pointer">
+    <circle cx="370" cy="510" r="30" fill="#3E3E3E" stroke="#9AAE4A" stroke-width="1.5" filter="url(#shadow-sm)"/>
+    <text x="370" y="505" text-anchor="middle" font-family="DM Sans" font-size="9" font-weight="700" fill="#D0E890">Part II</text>
+    <text x="370" y="518" text-anchor="middle" font-family="DM Sans" font-size="8" fill="#A0B860">.mdx</text>
+  </g>
+
+  <!-- ── VEHICLE NODE (top left corner) ── -->
+  <g class="node" data-tip="Vehicle|Nodo raíz de la estructura en IVS. Representa el programa o modelo de vehículo. El ECU PH se crea directamente bajo este nodo." style="cursor:pointer">
+    <rect x="30" y="30" width="110" height="50" rx="10" fill="#2C2C2C" stroke="#C9A84C" stroke-width="2" filter="url(#shadow-sm)"/>
+    <text x="85" y="50" text-anchor="middle" font-family="DM Sans" font-size="11" font-weight="700" fill="#C9A84C">🚗 Vehicle</text>
+    <text x="85" y="66" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#888">Nodo raíz</text>
+  </g>
+  <!-- Line from Vehicle to ECU PH -->
+  <line x1="140" y1="65" x2="310" y2="330" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.5"/>
+
+  <!-- ── SWAD SOURCE (bottom left) ── -->
+  <g>
+    <rect x="30" y="600" width="130" height="60" rx="8" fill="#2C2C2C" stroke="#C9A84C" stroke-width="1.5"/>
+    <text x="95" y="622" text-anchor="middle" font-family="DM Sans" font-size="10" font-weight="700" fill="#E8D49A">📄 SWAD</text>
+    <text x="95" y="637" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#AAAAAA">Punto de partida</text>
+    <text x="95" y="650" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#AAAAAA">SWCM Tool / D&R</text>
+  </g>
+  <line x1="160" y1="630" x2="305" y2="390" stroke="#C9A84C" stroke-width="1.2" stroke-dasharray="4,4" opacity="0.4"/>
+
+  <!-- ── FREEZE BADGE ── -->
+  <g>
+    <rect x="30" y="320" width="110" height="44" rx="8" fill="#F5EAEA" stroke="#B87878" stroke-width="1.5"/>
+    <text x="85" y="338" text-anchor="middle" font-family="DM Sans" font-size="10" font-weight="700" fill="#B87878">❄️ Freeze</text>
+    <text x="85" y="353" text-anchor="middle" font-family="DM Sans" font-size="9" fill="#8B3A3A">DIDs → (frz)</text>
+  </g>
+
+</svg>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#B87878;border-radius:3px;"></div>
+    ECU Placeholder (centro)
+  </div>
+  <div class="legend-item">
+    <div class="legend-dot" style="background:#2C2C2C;border:2px solid #C9A84C;border-radius:3px;"></div>
+    Placeholder (PH)
+  </div>
+  <div class="legend-item">
+    <div class="legend-circle" style="background:#C9A84C;"></div>
+    DID Assembly
+  </div>
+  <div class="legend-item">
+    <div class="legend-circle" style="background:#AE4A6B;"></div>
+    DID Strategy (.vbf)
+  </div>
+  <div class="legend-item">
+    <div class="legend-circle" style="background:#3E3E3E;border:2px solid #9AAE4A;"></div>
+    DID Part II (.mdx)
+  </div>
+  <div class="legend-item">
+    <div class="legend-circle" style="background:#3E3E3E;border:2px dashed #7A8AAE;"></div>
+    DID Opcional
+  </div>
+</div>
+
+<footer>
+  <div class="footer-line"></div>
+  Figura 3 &nbsp;·&nbsp; Reporte de Residencias Profesionales &nbsp;·&nbsp; IVS Engineering
+  <div class="footer-line"></div>
+</footer>
+
+<div class="tip" id="tip"></div>
+
+<script>
+  const tip = document.getElementById('tip');
+  document.querySelectorAll('.node').forEach(n => {
+    n.addEventListener('mouseenter', e => {
+      const [title, desc] = n.dataset.tip.split('|');
+      tip.innerHTML = `<strong>${title}</strong>${desc}`;
+      tip.style.display = 'block';
+    });
+    n.addEventListener('mousemove', e => {
+      tip.style.left = (e.clientX + 14) + 'px';
+      tip.style.top = (e.clientY - 20) + 'px';
+    });
+    n.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+  });
+</script>
+
+</body>
+</html>

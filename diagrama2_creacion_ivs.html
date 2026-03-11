@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagrama 2 – Proceso de Creación de Estructura en IVS</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --charcoal: #2C2C2C;
+    --charcoal-mid: #3E3E3E;
+    --charcoal-light: #5A5A5A;
+    --rose: #D4A5A5;
+    --rose-dark: #B87878;
+    --rose-pale: #F5EAEA;
+    --rose-mid: #E8CECE;
+    --gold: #C9A84C;
+    --gold-light: #E8D49A;
+    --cream: #FDF8F4;
+    --white: #FFFFFF;
+    --reject-bg: #FDF0F0;
+    --reject-border: #C47A7A;
+    --reject-text: #8B3A3A;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    padding: 48px 24px 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header { text-align: center; margin-bottom: 52px; }
+
+  .header-ornament {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin-bottom: 18px;
+  }
+  .ornament-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .ornament-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
+  .ornament-diamond { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); }
+
+  .header-label { font-size: 10px; font-weight: 500; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+
+  header h1 { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--charcoal); line-height: 1.2; margin-bottom: 8px; }
+  header p { font-size: 13px; color: var(--charcoal-light); font-weight: 300; }
+
+  .diagram { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 560px; }
+
+  .node { width: 100%; border-radius: 4px; padding: 16px 22px; animation: fadeDown 0.5s ease both; }
+
+  .node-process { background: var(--charcoal); border-left: 3px solid var(--gold); }
+  .node-process .node-number { font-size: 9px; font-weight: 500; color: var(--gold-light); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
+  .node-process .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 5px; line-height: 1.3; }
+  .node-process .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
+
+  .node-highlight { background: var(--charcoal-mid); border-left: 3px solid var(--rose-dark); }
+  .node-highlight .node-number { font-size: 9px; font-weight: 500; color: var(--rose); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
+  .node-highlight .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--rose-mid); margin-bottom: 5px; line-height: 1.3; }
+  .node-highlight .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
+
+  .node-decision {
+    background: var(--rose-pale); border: 1.5px solid var(--rose-dark);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    width: 220px; height: 92px;
+    display: flex; align-items: center; justify-content: center;
+    align-self: center; padding: 0;
+  }
+  .node-decision .node-title { font-size: 11px; font-weight: 600; color: var(--rose-dark); text-align: center; padding: 0 40px; line-height: 1.4; }
+
+  .node-reject { background: var(--reject-bg); border-left: 3px solid var(--reject-border); border-radius: 4px; padding: 12px 16px; width: 100%; }
+  .node-reject .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--reject-text); margin-bottom: 3px; }
+  .node-reject .node-desc { font-size: 11px; color: #A05050; font-weight: 300; line-height: 1.5; }
+
+  .node-success { background: #F0FAF4; border-left: 3px solid #6BAE8A; border-radius: 4px; padding: 12px 16px; width: 100%; }
+  .node-success .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #2D6A4F; margin-bottom: 3px; }
+  .node-success .node-desc { font-size: 11px; color: #3A8A5A; font-weight: 300; line-height: 1.5; }
+
+  .node-start {
+    background: linear-gradient(135deg, var(--rose-dark), var(--gold));
+    border-radius: 40px; width: 200px; align-self: center;
+    text-align: center; padding: 14px 28px;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+  }
+  .node-start .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 3px; }
+
+  .node-end {
+    background: var(--charcoal); border: 1.5px solid var(--gold);
+    border-radius: 40px; width: 200px; align-self: center;
+    text-align: center; padding: 14px 28px;
+  }
+  .node-end .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--gold); letter-spacing: 3px; }
+
+  .arrow { display: flex; flex-direction: column; align-items: center; }
+  .arrow-line { width: 1.5px; height: 26px; background: var(--gold); opacity: 0.7; }
+  .arrow-head { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid var(--gold); opacity: 0.8; }
+
+  .branch-row { display: flex; width: 100%; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .branch-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+
+  .branch-label { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase; }
+  .label-yes { background: var(--rose-pale); color: var(--rose-dark); border: 1px solid var(--rose-dark); }
+  .label-no { background: var(--reject-bg); color: var(--reject-text); border: 1px solid var(--reject-border); }
+
+  /* Step counter badge */
+  .step-badge {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 6px; align-self: flex-start;
+  }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--gold); color: var(--charcoal);
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-label { font-size: 9px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-light); }
+
+  .legend { display: flex; gap: 18px; margin-top: 44px; flex-wrap: wrap; justify-content: center; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--charcoal-light); }
+  .legend-box { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+  .legend-diamond { width: 12px; height: 12px; background: var(--rose-pale); border: 1.5px solid var(--rose-dark); transform: rotate(45deg); flex-shrink: 0; }
+
+  footer { margin-top: 48px; display: flex; align-items: center; gap: 12px; font-size: 10px; color: var(--charcoal-light); letter-spacing: 2px; text-transform: uppercase; }
+  .footer-line { width: 40px; height: 1px; background: var(--gold); opacity: 0.5; }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Figura 3 — Diagrama de Flujo</div>
+  <div class="header-ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line right"></div>
+  </div>
+  <h1>Proceso de Creación de Estructura en IVS</h1>
+  <p>Procedimiento definido por Ford Motor Company para la integración de software en la plataforma IVS</p>
+</header>
+
+<div class="diagram">
+
+  <div class="node node-start"><div class="node-title">INICIO</div></div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Paso 1 -->
+  <div class="node node-process">
+    <div class="node-number">Paso 01</div>
+    <div class="node-title">Recepción del paquete de deliverables</div>
+    <div class="node-desc">Se recibe el paquete completo del proveedor: archivo de calibración, Release Notes, checksum, metadata técnica y documentación de compatibilidad.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Decision 1 -->
+  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+    <div class="node-decision"><div class="node-title">¿Paquete completo y checksum válido?</div></div>
+    <div class="branch-row" style="margin-top:8px">
+      <div class="branch-col">
+        <div class="branch-label label-no">NO</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-reject">
+          <div class="node-title">Devolución al proveedor</div>
+          <div class="node-desc">Se emite notificación formal con las observaciones específicas. El proceso se detiene hasta recibir el paquete corregido.</div>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="branch-label label-yes">SÍ</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-highlight" style="width:100%">
+          <div class="node-number">Paso 02</div>
+          <div class="node-title">Registro del software en IVS</div>
+          <div class="node-desc">Se crea el registro en la plataforma IVS con número de parte, versión, módulo ECU aplicable, modelo de vehículo y proveedor.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Paso 3 -->
+  <div class="node node-highlight">
+    <div class="node-number">Paso 03</div>
+    <div class="node-title">Asignación de atributos técnicos</div>
+    <div class="node-desc">Se configuran los parámetros de compatibilidad, los modos de programación admitidos y las relaciones funcionales con otros módulos de la red CAN Bus del vehículo.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Paso 4 -->
+  <div class="node node-highlight">
+    <div class="node-number">Paso 04</div>
+    <div class="node-title">Vinculación de variantes del módulo</div>
+    <div class="node-desc">Para módulos con múltiples variantes (como los LED Driver A, B, C, D y E), se asegura que cada variante quede correctamente enlazada al vehículo, configuración y versión de HCM correspondiente.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Decision 2 -->
+  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+    <div class="node-decision"><div class="node-title">¿Estructura íntegra sin conflictos?</div></div>
+    <div class="branch-row" style="margin-top:8px">
+      <div class="branch-col">
+        <div class="branch-label label-no">NO</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-reject">
+          <div class="node-title">Corrección de conflictos</div>
+          <div class="node-desc">Se identifican versiones en conflicto, incompatibilidades o atributos incorrectos. Se corrigen y se regresa al Paso 03.</div>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="branch-label label-yes">SÍ</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-highlight" style="width:100%">
+          <div class="node-number">Paso 05</div>
+          <div class="node-title">Validación de calidad interna</div>
+          <div class="node-desc">Se verifica la consistencia entre versiones, la alineación con estándares corporativos de Ford y el cumplimiento de los criterios de integridad funcional (ISO 26262).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Decision 3 -->
+  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+    <div class="node-decision"><div class="node-title">¿Validación de calidad aprobada?</div></div>
+    <div class="branch-row" style="margin-top:8px">
+      <div class="branch-col">
+        <div class="branch-label label-no">NO</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-reject">
+          <div class="node-title">Apertura de ticket interno</div>
+          <div class="node-desc">Se documenta la no conformidad en JIRA, se asigna responsable y se regresa al paso correspondiente para corrección.</div>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="branch-label label-yes">SÍ</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-highlight" style="width:100%">
+          <div class="node-number">Paso 06</div>
+          <div class="node-title">Aprobación formal del IVS Engineer</div>
+          <div class="node-desc">El IVS Engineer responsable del módulo emite la aprobación formal dentro de la plataforma, autorizando la publicación del software.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Paso 7 -->
+  <div class="node node-highlight">
+    <div class="node-number">Paso 07</div>
+    <div class="node-title">Publicación en IVS</div>
+    <div class="node-desc">El software se publica en la biblioteca central de IVS. Queda disponible para descarga por parte de los dealers y como fuente para actualizaciones OTA en campo.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Paso 8 -->
+  <div class="node node-highlight">
+    <div class="node-number">Paso 08</div>
+    <div class="node-title">Generación de evidencia y cierre</div>
+    <div class="node-desc">Se documenta el proceso completo en Confluence: fechas, responsables, versión publicada y estatus de cierre. Esta evidencia respalda futuras auditorías internas.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Success -->
+  <div class="node node-success">
+    <div class="node-title">Estructura publicada y disponible en IVS</div>
+    <div class="node-desc">El software está listo para instalación en la red global de dealers y para distribución OTA. El ciclo de creación de estructura concluye exitosamente.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <div class="node node-end"><div class="node-title">FIN</div></div>
+
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-box" style="background:var(--charcoal);border-left:3px solid var(--gold)"></div>
+    Etapa del proceso
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:var(--charcoal-mid);border-left:3px solid var(--rose-dark)"></div>
+    Responsabilidad IVS Engineering
+  </div>
+  <div class="legend-item"><div class="legend-diamond"></div> Decisión / validación</div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:var(--reject-bg);border-left:3px solid var(--reject-border)"></div>
+    Rechazo / corrección
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#F0FAF4;border-left:3px solid #6BAE8A"></div>
+    Resultado exitoso
+  </div>
+</div>
+
+<footer>
+  <div class="footer-line"></div>
+  Figura 3 &nbsp;·&nbsp; Reporte de Residencias Profesionales &nbsp;·&nbsp; IVS Engineering
+  <div class="footer-line"></div>
+</footer>
+
+</body>
+</html>

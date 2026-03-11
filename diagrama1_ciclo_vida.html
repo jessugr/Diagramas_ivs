@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagrama 1 – Ciclo de Vida del Software Automotriz</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --charcoal: #2C2C2C;
+    --charcoal-mid: #3E3E3E;
+    --charcoal-light: #5A5A5A;
+    --rose: #D4A5A5;
+    --rose-dark: #B87878;
+    --rose-pale: #F5EAEA;
+    --rose-mid: #E8CECE;
+    --gold: #C9A84C;
+    --gold-light: #E8D49A;
+    --gold-pale: #FAF5E4;
+    --cream: #FDF8F4;
+    --white: #FFFFFF;
+    --reject-bg: #FDF0F0;
+    --reject-border: #C47A7A;
+    --reject-text: #8B3A3A;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    padding: 48px 24px 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header { text-align: center; margin-bottom: 52px; }
+
+  .header-ornament {
+    display: flex; align-items: center; justify-content: center;
+    gap: 12px; margin-bottom: 18px;
+  }
+  .ornament-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .ornament-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
+  .ornament-diamond { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); }
+
+  .header-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 10px;
+  }
+
+  header h1 {
+    font-family: var(--font-display); font-size: 28px; font-weight: 700;
+    color: var(--charcoal); line-height: 1.2; margin-bottom: 8px;
+  }
+
+  header p { font-size: 13px; color: var(--charcoal-light); font-weight: 300; }
+
+  .diagram {
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%; max-width: 560px;
+  }
+
+  .node { width: 100%; border-radius: 4px; padding: 16px 22px; animation: fadeDown 0.5s ease both; }
+
+  .node-process { background: var(--charcoal); border-left: 3px solid var(--gold); }
+  .node-process .node-number { font-size: 9px; font-weight: 500; color: var(--gold-light); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
+  .node-process .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 5px; line-height: 1.3; }
+  .node-process .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
+
+  .node-highlight { background: var(--charcoal-mid); border-left: 3px solid var(--rose-dark); }
+  .node-highlight .node-number { font-size: 9px; font-weight: 500; color: var(--rose); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
+  .node-highlight .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--rose-mid); margin-bottom: 5px; line-height: 1.3; }
+  .node-highlight .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
+
+  .node-decision {
+    background: var(--rose-pale); border: 1.5px solid var(--rose-dark);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    width: 210px; height: 88px;
+    display: flex; align-items: center; justify-content: center;
+    align-self: center; padding: 0;
+  }
+  .node-decision .node-title { font-size: 11px; font-weight: 600; color: var(--rose-dark); text-align: center; padding: 0 36px; line-height: 1.4; }
+
+  .node-reject { background: var(--reject-bg); border-left: 3px solid var(--reject-border); border-radius: 4px; padding: 12px 16px; width: 100%; }
+  .node-reject .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--reject-text); margin-bottom: 3px; }
+  .node-reject .node-desc { font-size: 11px; color: #A05050; font-weight: 300; line-height: 1.5; }
+
+  .node-start {
+    background: linear-gradient(135deg, var(--rose-dark), var(--gold));
+    border-radius: 40px; width: 200px; align-self: center;
+    text-align: center; padding: 14px 28px;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+  }
+  .node-start .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 3px; }
+
+  .node-end {
+    background: var(--charcoal); border: 1.5px solid var(--gold);
+    border-radius: 40px; width: 200px; align-self: center;
+    text-align: center; padding: 14px 28px;
+  }
+  .node-end .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--gold); letter-spacing: 3px; }
+
+  .arrow { display: flex; flex-direction: column; align-items: center; }
+  .arrow-line { width: 1.5px; height: 26px; background: var(--gold); opacity: 0.7; }
+  .arrow-head { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid var(--gold); opacity: 0.8; }
+
+  .branch-row { display: flex; width: 100%; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .branch-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+
+  .branch-label { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase; }
+  .label-yes { background: var(--rose-pale); color: var(--rose-dark); border: 1px solid var(--rose-dark); }
+  .label-no { background: var(--reject-bg); color: var(--reject-text); border: 1px solid var(--reject-border); }
+
+  .ivs-box {
+    border: 1.5px dashed var(--rose); border-radius: 6px;
+    padding: 6px 14px 16px; width: 100%; position: relative;
+    background: rgba(212,165,165,0.04);
+  }
+  .ivs-box-label {
+    position: absolute; top: -11px; left: 16px;
+    background: var(--cream); font-size: 9px; font-weight: 500;
+    color: var(--rose-dark); letter-spacing: 2.5px; padding: 0 8px; text-transform: uppercase;
+  }
+
+  .legend { display: flex; gap: 18px; margin-top: 44px; flex-wrap: wrap; justify-content: center; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--charcoal-light); }
+  .legend-box { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+  .legend-diamond { width: 12px; height: 12px; background: var(--rose-pale); border: 1.5px solid var(--rose-dark); transform: rotate(45deg); flex-shrink: 0; }
+
+  footer { margin-top: 48px; display: flex; align-items: center; gap: 12px; font-size: 10px; color: var(--charcoal-light); letter-spacing: 2px; text-transform: uppercase; }
+  .footer-line { width: 40px; height: 1px; background: var(--gold); opacity: 0.5; }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Figura 2 — Diagrama de Flujo</div>
+  <div class="header-ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line right"></div>
+  </div>
+  <h1>Ciclo de Vida del Software Automotriz</h1>
+  <p>Desde el desarrollo en el proveedor hasta la instalación en el vehículo</p>
+</header>
+
+<div class="diagram">
+
+  <div class="node node-start"><div class="node-title">INICIO</div></div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <div class="node node-process">
+    <div class="node-number">Etapa 01 — Proveedor</div>
+    <div class="node-title">Definición de requerimientos y diseño</div>
+    <div class="node-desc">El proveedor Tier 1/2 recibe los requerimientos funcionales y técnicos del OEM y define la arquitectura del software del módulo ECU.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <div class="node node-process">
+    <div class="node-number">Etapa 02 — Proveedor</div>
+    <div class="node-title">Implementación y pruebas internas</div>
+    <div class="node-desc">Desarrollo del código embebido, ejecución de pruebas unitarias, de integración y de sistema conforme a Automotive SPICE.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <div class="node node-process">
+    <div class="node-number">Etapa 03 — Proveedor → OEM</div>
+    <div class="node-title">Generación y entrega de deliverables</div>
+    <div class="node-desc">El proveedor prepara el paquete completo: archivo de calibración (.hex/.bin), Release Notes, checksum, metadata técnica y documentación de compatibilidad.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- IVS BOX -->
+  <div class="ivs-box">
+    <span class="ivs-box-label">Área de IVS Engineering — Responsabilidad del proyecto</span>
+
+    <div class="arrow" style="margin-top:14px"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+      <div class="node-decision"><div class="node-title">¿Deliverables completos y conformes?</div></div>
+      <div class="branch-row" style="margin-top:8px">
+        <div class="branch-col">
+          <div class="branch-label label-no">NO</div>
+          <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+          <div class="node node-reject">
+            <div class="node-title">Rechazo y notificación</div>
+            <div class="node-desc">Se notifica al proveedor con observaciones. El paquete regresa a Etapa 03 para corrección.</div>
+          </div>
+        </div>
+        <div class="branch-col">
+          <div class="branch-label label-yes">SÍ</div>
+          <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+          <div class="node node-highlight" style="width:100%">
+            <div class="node-number">Etapa 04 — IVS Engineering</div>
+            <div class="node-title">Creación de estructura en IVS</div>
+            <div class="node-desc">Registro en la plataforma IVS: asignación al módulo ECU, configuración de versiones, relaciones entre módulos y atributos técnicos.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow" style="margin-top:6px"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+      <div class="node-decision"><div class="node-title">¿Estructura válida e íntegra?</div></div>
+      <div class="branch-row" style="margin-top:8px">
+        <div class="branch-col">
+          <div class="branch-label label-no">NO</div>
+          <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+          <div class="node node-reject">
+            <div class="node-title">Corrección de estructura</div>
+            <div class="node-desc">Se identifican y corrigen errores en IVS. Se documenta la causa raíz y se genera ticket interno.</div>
+          </div>
+        </div>
+        <div class="branch-col">
+          <div class="branch-label label-yes">SÍ</div>
+          <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+          <div class="node node-highlight" style="width:100%">
+            <div class="node-number">Etapa 05 — IVS Engineering</div>
+            <div class="node-title">Validación de calidad y aprobación</div>
+            <div class="node-desc">Revisión de consistencia entre versiones y conformidad con ISO 26262. Aprobación formal del IVS Engineer responsable.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="arrow" style="margin-top:6px"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+    <div class="node node-highlight">
+      <div class="node-number">Etapa 06 — IVS Engineering</div>
+      <div class="node-title">Publicación en plataforma IVS</div>
+      <div class="node-desc">El software se publica en la biblioteca central de IVS y queda disponible para distribución a la red global de dealers y centros de servicio.</div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <div class="node node-process">
+    <div class="node-number">Etapa 07 — Red de Distribución</div>
+    <div class="node-title">Distribución a dealers y centros de servicio</div>
+    <div class="node-desc">El software se distribuye a la red global mediante descarga directa desde IVS o mediante actualizaciones OTA para vehículos en campo.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <div class="node node-process">
+    <div class="node-number">Etapa 08 — Dealer / Vehículo</div>
+    <div class="node-title">Instalación en el vehículo</div>
+    <div class="node-desc">El dealer o el sistema OTA instala el software en el módulo ECU. Se realizan verificaciones de diagnóstico post-instalación.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Decision 3 -->
+  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+    <div class="node-decision"><div class="node-title">¿Falla detectada en campo?</div></div>
+    <div class="branch-row" style="margin-top:8px">
+      <div class="branch-col">
+        <div class="branch-label label-no" style="background:var(--reject-bg);color:var(--reject-text);border-color:var(--reject-border)">SÍ</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-reject">
+          <div class="node-title">Generación de ticket en JIRA</div>
+          <div class="node-desc">IVS Engineering analiza, corrige la estructura y repite el ciclo desde Etapa 04.</div>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="branch-label label-yes">NO</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-process" style="width:100%;border-left-color:var(--rose-dark)">
+          <div class="node-title" style="font-size:13px">Software operando correctamente</div>
+          <div class="node-desc">Proceso de liberación concluido exitosamente.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+  <div class="node node-end"><div class="node-title">FIN</div></div>
+
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-box" style="background:var(--charcoal);border-left:3px solid var(--gold)"></div>
+    Etapa del proceso
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:var(--charcoal-mid);border-left:3px solid var(--rose-dark)"></div>
+    Responsabilidad IVS Engineering
+  </div>
+  <div class="legend-item"><div class="legend-diamond"></div> Decisión / validación</div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:var(--reject-bg);border-left:3px solid var(--reject-border)"></div>
+    Rechazo / corrección
+  </div>
+</div>
+
+<footer>
+  <div class="footer-line"></div>
+  Figura 2 &nbsp;·&nbsp; Reporte de Residencias Profesionales &nbsp;·&nbsp; IVS Engineering
+  <div class="footer-line"></div>
+</footer>
+
+</body>
+</html>

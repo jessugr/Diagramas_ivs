@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagrama 3 – Proceso de Resolución de Tickets</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --charcoal: #2C2C2C;
+    --charcoal-mid: #3E3E3E;
+    --charcoal-light: #5A5A5A;
+    --rose: #D4A5A5;
+    --rose-dark: #B87878;
+    --rose-pale: #F5EAEA;
+    --rose-mid: #E8CECE;
+    --gold: #C9A84C;
+    --gold-light: #E8D49A;
+    --cream: #FDF8F4;
+    --white: #FFFFFF;
+    --reject-bg: #FDF0F0;
+    --reject-border: #C47A7A;
+    --reject-text: #8B3A3A;
+    --font-display: 'Cormorant Garamond', serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    padding: 48px 24px 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header { text-align: center; margin-bottom: 52px; }
+
+  .header-ornament { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 18px; }
+  .ornament-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+  .ornament-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
+  .ornament-diamond { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); }
+
+  .header-label { font-size: 10px; font-weight: 500; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  header h1 { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--charcoal); line-height: 1.2; margin-bottom: 8px; }
+  header p { font-size: 13px; color: var(--charcoal-light); font-weight: 300; }
+
+  .diagram { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 560px; }
+
+  .node { width: 100%; border-radius: 4px; padding: 16px 22px; animation: fadeDown 0.5s ease both; }
+
+  .node-process { background: var(--charcoal); border-left: 3px solid var(--gold); }
+  .node-process .node-number { font-size: 9px; font-weight: 500; color: var(--gold-light); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
+  .node-process .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 5px; line-height: 1.3; }
+  .node-process .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
+
+  .node-highlight { background: var(--charcoal-mid); border-left: 3px solid var(--rose-dark); }
+  .node-highlight .node-number { font-size: 9px; font-weight: 500; color: var(--rose); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
+  .node-highlight .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--rose-mid); margin-bottom: 5px; line-height: 1.3; }
+  .node-highlight .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
+
+  .node-decision {
+    background: var(--rose-pale); border: 1.5px solid var(--rose-dark);
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    width: 220px; height: 92px;
+    display: flex; align-items: center; justify-content: center;
+    align-self: center; padding: 0;
+  }
+  .node-decision .node-title { font-size: 11px; font-weight: 600; color: var(--rose-dark); text-align: center; padding: 0 40px; line-height: 1.4; }
+
+  .node-reject { background: var(--reject-bg); border-left: 3px solid var(--reject-border); border-radius: 4px; padding: 12px 16px; width: 100%; }
+  .node-reject .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--reject-text); margin-bottom: 3px; }
+  .node-reject .node-desc { font-size: 11px; color: #A05050; font-weight: 300; line-height: 1.5; }
+
+  .node-escalation { background: #FFF8EC; border-left: 3px solid var(--gold); border-radius: 4px; padding: 12px 16px; width: 100%; }
+  .node-escalation .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #7A5A10; margin-bottom: 3px; }
+  .node-escalation .node-desc { font-size: 11px; color: #9A7A30; font-weight: 300; line-height: 1.5; }
+
+  .node-success { background: #F0FAF4; border-left: 3px solid #6BAE8A; border-radius: 4px; padding: 12px 16px; width: 100%; }
+  .node-success .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #2D6A4F; margin-bottom: 3px; }
+  .node-success .node-desc { font-size: 11px; color: #3A8A5A; font-weight: 300; line-height: 1.5; }
+
+  .node-start {
+    background: linear-gradient(135deg, var(--rose-dark), var(--gold));
+    border-radius: 40px; width: 200px; align-self: center;
+    text-align: center; padding: 14px 28px;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+  }
+  .node-start .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 3px; }
+
+  .node-end {
+    background: var(--charcoal); border: 1.5px solid var(--gold);
+    border-radius: 40px; width: 200px; align-self: center;
+    text-align: center; padding: 14px 28px;
+  }
+  .node-end .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--gold); letter-spacing: 3px; }
+
+  /* Ticket source badge */
+  .ticket-sources {
+    display: flex; gap: 8px; width: 100%; margin-bottom: 6px;
+  }
+  .ticket-source {
+    flex: 1; background: var(--charcoal); border: 1px solid var(--rose-dark);
+    border-radius: 4px; padding: 10px 12px; text-align: center;
+  }
+  .ticket-source .ts-label { font-size: 9px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--rose); margin-bottom: 4px; }
+  .ticket-source .ts-title { font-size: 12px; font-weight: 600; color: var(--white); line-height: 1.3; font-family: var(--font-display); }
+
+  .arrow { display: flex; flex-direction: column; align-items: center; }
+  .arrow-line { width: 1.5px; height: 26px; background: var(--gold); opacity: 0.7; }
+  .arrow-head { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid var(--gold); opacity: 0.8; }
+
+  .branch-row { display: flex; width: 100%; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .branch-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
+
+  .branch-label { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase; }
+  .label-yes { background: var(--rose-pale); color: var(--rose-dark); border: 1px solid var(--rose-dark); }
+  .label-no { background: var(--reject-bg); color: var(--reject-text); border: 1px solid var(--reject-border); }
+
+  .legend { display: flex; gap: 18px; margin-top: 44px; flex-wrap: wrap; justify-content: center; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--charcoal-light); }
+  .legend-box { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
+  .legend-diamond { width: 12px; height: 12px; background: var(--rose-pale); border: 1.5px solid var(--rose-dark); transform: rotate(45deg); flex-shrink: 0; }
+
+  footer { margin-top: 48px; display: flex; align-items: center; gap: 12px; font-size: 10px; color: var(--charcoal-light); letter-spacing: 2px; text-transform: uppercase; }
+  .footer-line { width: 40px; height: 1px; background: var(--gold); opacity: 0.5; }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Figura 4 — Diagrama de Flujo</div>
+  <div class="header-ornament">
+    <div class="ornament-line"></div>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line right"></div>
+  </div>
+  <h1>Proceso de Resolución de Tickets de Incidencias</h1>
+  <p>Gestión de fallas de software detectadas en vehículos de producción y postventa</p>
+</header>
+
+<div class="diagram">
+
+  <div class="node node-start"><div class="node-title">INICIO</div></div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Fuentes del ticket -->
+  <div style="width:100%">
+    <div style="font-size:9px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--gold-light);margin-bottom:8px;text-align:center;">Origen del ticket</div>
+    <div class="ticket-sources">
+      <div class="ticket-source">
+        <div class="ts-label">Fuente 01</div>
+        <div class="ts-title">Falla detectada en producción</div>
+      </div>
+      <div class="ticket-source">
+        <div class="ts-label">Fuente 02</div>
+        <div class="ts-title">Incidencia en vehículo postventa</div>
+      </div>
+      <div class="ticket-source">
+        <div class="ts-label">Fuente 03</div>
+        <div class="ts-title">Error interno en estructura IVS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Paso 1 -->
+  <div class="node node-highlight">
+    <div class="node-number">Paso 01</div>
+    <div class="node-title">Recepción y registro del ticket en JIRA</div>
+    <div class="node-desc">El ticket es recibido y registrado en JIRA con descripción del problema, módulo afectado, número de vehículo o VIN, y prioridad asignada según el impacto potencial.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Paso 2 -->
+  <div class="node node-highlight">
+    <div class="node-number">Paso 02</div>
+    <div class="node-title">Análisis del módulo afectado</div>
+    <div class="node-desc">Se revisa la estructura del módulo en IVS: versión activa, relaciones con otros módulos, historial de cambios y deliverables asociados. Se consulta Confluence para identificar precedentes similares.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Decision 1 -->
+  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+    <div class="node-decision"><div class="node-title">¿Se identifica la causa raíz?</div></div>
+    <div class="branch-row" style="margin-top:8px">
+      <div class="branch-col">
+        <div class="branch-label label-no">NO</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-escalation">
+          <div class="node-title">Escalación al equipo técnico</div>
+          <div class="node-desc">Se escala el ticket al equipo de ingeniería senior o al área técnica del OEM. Se documenta el análisis previo realizado.</div>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="branch-label label-yes">SÍ</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-highlight" style="width:100%">
+          <div class="node-number">Paso 03</div>
+          <div class="node-title">Documentación de causa raíz</div>
+          <div class="node-desc">Se documenta la causa raíz identificada en JIRA: versión incorrecta, estructura mal configurada, deliverable incompleto, incompatibilidad entre módulos u otro origen.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Decision 2 -->
+  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+    <div class="node-decision"><div class="node-title">¿Requiere corrección en IVS?</div></div>
+    <div class="branch-row" style="margin-top:8px">
+      <div class="branch-col">
+        <div class="branch-label label-no">NO</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-escalation">
+          <div class="node-title">Notificación al proveedor</div>
+          <div class="node-desc">Si la causa raíz está en el software del proveedor, se emite notificación formal solicitando un nuevo deliverable corregido.</div>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="branch-label label-yes">SÍ</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-highlight" style="width:100%">
+          <div class="node-number">Paso 04</div>
+          <div class="node-title">Corrección de estructura en IVS</div>
+          <div class="node-desc">Se aplica la corrección directamente en la plataforma IVS: actualización de versión, corrección de atributos, reconfiguración de relaciones entre módulos o reasignación de variantes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Paso 5 -->
+  <div class="node node-highlight">
+    <div class="node-number">Paso 05</div>
+    <div class="node-title">Validación de la corrección aplicada</div>
+    <div class="node-desc">Se verifica que la corrección resuelve el problema reportado sin generar nuevos conflictos en la estructura. Se revisan los módulos relacionados que pudieran verse afectados.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <!-- Decision 3 -->
+  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
+    <div class="node-decision"><div class="node-title">¿Dealer puede instalar el software corregido?</div></div>
+    <div class="branch-row" style="margin-top:8px">
+      <div class="branch-col">
+        <div class="branch-label label-no">NO</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-reject">
+          <div class="node-title">Revisión adicional</div>
+          <div class="node-desc">Se identifican los obstáculos que impiden la instalación y se regresa al Paso 04 para una corrección adicional.</div>
+        </div>
+      </div>
+      <div class="branch-col">
+        <div class="branch-label label-yes">SÍ</div>
+        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
+        <div class="node node-highlight" style="width:100%">
+          <div class="node-number">Paso 06</div>
+          <div class="node-title">Cierre y documentación final</div>
+          <div class="node-desc">Se cierra el ticket en JIRA con estatus resuelto. Se documenta la solución completa en Confluence como base de conocimiento para incidencias futuras similares.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <div class="node node-success">
+    <div class="node-title">Incidencia resuelta y software operando correctamente</div>
+    <div class="node-desc">El vehículo puede ser atendido por el dealer con el software corregido. El proceso de resolución de ticket concluye exitosamente.</div>
+  </div>
+  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
+
+  <div class="node node-end"><div class="node-title">FIN</div></div>
+
+</div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-box" style="background:var(--charcoal);border-left:3px solid var(--gold)"></div>
+    Etapa del proceso
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:var(--charcoal-mid);border-left:3px solid var(--rose-dark)"></div>
+    Responsabilidad IVS Engineering
+  </div>
+  <div class="legend-item"><div class="legend-diamond"></div> Decisión / validación</div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:var(--reject-bg);border-left:3px solid var(--reject-border)"></div>
+    Rechazo / revisión
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#FFF8EC;border-left:3px solid var(--gold)"></div>
+    Escalación / notificación
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#F0FAF4;border-left:3px solid #6BAE8A"></div>
+    Resultado exitoso
+  </div>
+</div>
+
+<footer>
+  <div class="footer-line"></div>
+  Figura 4 &nbsp;·&nbsp; Reporte de Residencias Profesionales &nbsp;·&nbsp; IVS Engineering
+  <div class="footer-line"></div>
+</footer>
+
+</body>
+</html>

@@ -3,309 +3,507 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagrama 2 – Proceso de Creación de Estructura en IVS</title>
+<title>Proceso de Creación de Estructura en IVS NG</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --charcoal: #2C2C2C;
-    --charcoal-mid: #3E3E3E;
-    --charcoal-light: #5A5A5A;
-    --rose: #D4A5A5;
-    --rose-dark: #B87878;
-    --rose-pale: #F5EAEA;
-    --rose-mid: #E8CECE;
-    --gold: #C9A84C;
-    --gold-light: #E8D49A;
-    --cream: #FDF8F4;
-    --white: #FFFFFF;
-    --reject-bg: #FDF0F0;
-    --reject-border: #C47A7A;
-    --reject-text: #8B3A3A;
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'DM Sans', sans-serif;
+    --rose:    #D4A0A0;
+    --rose-dk: #B87878;
+    --gold:    #C9A84C;
+    --charcoal:#2C2C2C;
+    --gray:    #555555;
+    --lgray:   #F7F3F3;
+    --white:   #FFFFFF;
+    --green:   #6B9E78;
+    --red:     #C47070;
+    --blue:    #7A9BBF;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: var(--cream);
-    font-family: var(--font-body);
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--charcoal);
     min-height: 100vh;
-    padding: 48px 24px 64px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--charcoal);
+    padding: 28px 48px 24px;
+    border-bottom: 4px solid var(--rose);
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.5px;
+  }
+  .header p {
+    font-size: 13px;
+    color: var(--rose);
+    margin-top: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px 48px;
+    background: var(--lgray);
+    border-bottom: 1px solid #E8DADA;
     align-items: center;
   }
-
-  header { text-align: center; margin-bottom: 52px; }
-
-  .header-ornament {
-    display: flex; align-items: center; justify-content: center;
-    gap: 12px; margin-bottom: 18px;
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--gray);
+    font-weight: 500;
   }
-  .ornament-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
-  .ornament-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
-  .ornament-diamond { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); }
-
-  .header-label { font-size: 10px; font-weight: 500; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
-
-  header h1 { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--charcoal); line-height: 1.2; margin-bottom: 8px; }
-  header p { font-size: 13px; color: var(--charcoal-light); font-weight: 300; }
-
-  .diagram { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 560px; }
-
-  .node { width: 100%; border-radius: 4px; padding: 16px 22px; animation: fadeDown 0.5s ease both; }
-
-  .node-process { background: var(--charcoal); border-left: 3px solid var(--gold); }
-  .node-process .node-number { font-size: 9px; font-weight: 500; color: var(--gold-light); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
-  .node-process .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 5px; line-height: 1.3; }
-  .node-process .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
-
-  .node-highlight { background: var(--charcoal-mid); border-left: 3px solid var(--rose-dark); }
-  .node-highlight .node-number { font-size: 9px; font-weight: 500; color: var(--rose); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
-  .node-highlight .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--rose-mid); margin-bottom: 5px; line-height: 1.3; }
-  .node-highlight .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
-
-  .node-decision {
-    background: var(--rose-pale); border: 1.5px solid var(--rose-dark);
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-    width: 220px; height: 92px;
-    display: flex; align-items: center; justify-content: center;
-    align-self: center; padding: 0;
-  }
-  .node-decision .node-title { font-size: 11px; font-weight: 600; color: var(--rose-dark); text-align: center; padding: 0 40px; line-height: 1.4; }
-
-  .node-reject { background: var(--reject-bg); border-left: 3px solid var(--reject-border); border-radius: 4px; padding: 12px 16px; width: 100%; }
-  .node-reject .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--reject-text); margin-bottom: 3px; }
-  .node-reject .node-desc { font-size: 11px; color: #A05050; font-weight: 300; line-height: 1.5; }
-
-  .node-success { background: #F0FAF4; border-left: 3px solid #6BAE8A; border-radius: 4px; padding: 12px 16px; width: 100%; }
-  .node-success .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #2D6A4F; margin-bottom: 3px; }
-  .node-success .node-desc { font-size: 11px; color: #3A8A5A; font-weight: 300; line-height: 1.5; }
-
-  .node-start {
-    background: linear-gradient(135deg, var(--rose-dark), var(--gold));
-    border-radius: 40px; width: 200px; align-self: center;
-    text-align: center; padding: 14px 28px;
-    box-shadow: 0 4px 20px rgba(201,168,76,0.25);
-  }
-  .node-start .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 3px; }
-
-  .node-end {
-    background: var(--charcoal); border: 1.5px solid var(--gold);
-    border-radius: 40px; width: 200px; align-self: center;
-    text-align: center; padding: 14px 28px;
-  }
-  .node-end .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--gold); letter-spacing: 3px; }
-
-  .arrow { display: flex; flex-direction: column; align-items: center; }
-  .arrow-line { width: 1.5px; height: 26px; background: var(--gold); opacity: 0.7; }
-  .arrow-head { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid var(--gold); opacity: 0.8; }
-
-  .branch-row { display: flex; width: 100%; justify-content: space-between; align-items: flex-start; gap: 10px; }
-  .branch-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
-
-  .branch-label { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase; }
-  .label-yes { background: var(--rose-pale); color: var(--rose-dark); border: 1px solid var(--rose-dark); }
-  .label-no { background: var(--reject-bg); color: var(--reject-text); border: 1px solid var(--reject-border); }
-
-  /* Step counter badge */
-  .step-badge {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 6px; align-self: flex-start;
-  }
-  .step-num {
-    width: 24px; height: 24px; border-radius: 50%;
-    background: var(--gold); color: var(--charcoal);
-    font-size: 11px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
+  .legend-box {
+    width: 20px; height: 20px;
+    border-radius: 4px;
     flex-shrink: 0;
   }
-  .step-label { font-size: 9px; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-light); }
+  .legend-diamond {
+    width: 16px; height: 16px;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    border-radius: 2px;
+  }
+  .legend-arrow {
+    font-size: 16px;
+    color: var(--gray);
+  }
 
-  .legend { display: flex; gap: 18px; margin-top: 44px; flex-wrap: wrap; justify-content: center; }
-  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--charcoal-light); }
-  .legend-box { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
-  .legend-diamond { width: 12px; height: 12px; background: var(--rose-pale); border: 1.5px solid var(--rose-dark); transform: rotate(45deg); flex-shrink: 0; }
+  /* ── DIAGRAM CONTAINER ── */
+  .diagram-wrap {
+    padding: 40px 48px 48px;
+    overflow-x: auto;
+  }
 
-  footer { margin-top: 48px; display: flex; align-items: center; gap: 12px; font-size: 10px; color: var(--charcoal-light); letter-spacing: 2px; text-transform: uppercase; }
-  .footer-line { width: 40px; height: 1px; background: var(--gold); opacity: 0.5; }
+  svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+  }
 
-  @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  /* ── NODE STYLES ── */
+  .node-process rect {
+    fill: var(--white);
+    stroke: var(--rose-dk);
+    stroke-width: 2;
+    rx: 8;
+  }
+  .node-process:hover rect {
+    fill: #FDF5F5;
+    filter: drop-shadow(0 4px 12px rgba(180,120,120,0.25));
+  }
+
+  .node-decision polygon {
+    fill: var(--white);
+    stroke: var(--gold);
+    stroke-width: 2;
+  }
+  .node-decision:hover polygon {
+    fill: #FDFAF0;
+    filter: drop-shadow(0 4px 12px rgba(201,168,76,0.25));
+  }
+
+  .node-start ellipse, .node-end ellipse {
+    fill: var(--charcoal);
+    stroke: none;
+  }
+  .node-end ellipse { fill: var(--rose-dk); }
+
+  .node-reject rect {
+    fill: #FDF0F0;
+    stroke: var(--red);
+    stroke-width: 2;
+    rx: 8;
+  }
+
+  .node-success rect {
+    fill: #F0F7F2;
+    stroke: var(--green);
+    stroke-width: 2;
+    rx: 8;
+  }
+
+  /* text */
+  .label-main {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--charcoal);
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+  }
+  .label-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    fill: var(--gray);
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+  }
+  .label-white {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--white);
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+  }
+  .label-step {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    fill: var(--rose-dk);
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .edge-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    fill: var(--gray);
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .edge-label-yes { fill: var(--green); }
+  .edge-label-no  { fill: var(--red); }
+
+  /* arrows */
+  .arrow { stroke: var(--gray); stroke-width: 2; fill: none; }
+  .arrow-rose { stroke: var(--rose-dk); stroke-width: 2; fill: none; stroke-dasharray: 6,3; }
+  .arrow-red  { stroke: var(--red); stroke-width: 1.5; fill: none; stroke-dasharray: 5,3; }
+
+  /* tooltip */
+  .tooltip {
+    position: fixed;
+    background: var(--charcoal);
+    color: var(--white);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    max-width: 260px;
+    line-height: 1.5;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 100;
+    border-left: 3px solid var(--rose);
+  }
+  .tooltip.visible { opacity: 1; }
+
+  /* print */
+  @media print {
+    .header { background: var(--charcoal) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .legend { background: var(--lgray) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { background: white; }
+    .tooltip { display: none; }
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-label">Figura 3 — Diagrama de Flujo</div>
-  <div class="header-ornament">
-    <div class="ornament-line"></div>
-    <div class="ornament-diamond"></div>
-    <div class="ornament-line right"></div>
-  </div>
-  <h1>Proceso de Creación de Estructura en IVS</h1>
-  <p>Procedimiento definido por Ford Motor Company para la integración de software en la plataforma IVS</p>
-</header>
-
-<div class="diagram">
-
-  <div class="node node-start"><div class="node-title">INICIO</div></div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Paso 1 -->
-  <div class="node node-process">
-    <div class="node-number">Paso 01</div>
-    <div class="node-title">Recepción del paquete de deliverables</div>
-    <div class="node-desc">Se recibe el paquete completo del proveedor: archivo de calibración, Release Notes, checksum, metadata técnica y documentación de compatibilidad.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Decision 1 -->
-  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-    <div class="node-decision"><div class="node-title">¿Paquete completo y checksum válido?</div></div>
-    <div class="branch-row" style="margin-top:8px">
-      <div class="branch-col">
-        <div class="branch-label label-no">NO</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-reject">
-          <div class="node-title">Devolución al proveedor</div>
-          <div class="node-desc">Se emite notificación formal con las observaciones específicas. El proceso se detiene hasta recibir el paquete corregido.</div>
-        </div>
-      </div>
-      <div class="branch-col">
-        <div class="branch-label label-yes">SÍ</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-highlight" style="width:100%">
-          <div class="node-number">Paso 02</div>
-          <div class="node-title">Registro del software en IVS</div>
-          <div class="node-desc">Se crea el registro en la plataforma IVS con número de parte, versión, módulo ECU aplicable, modelo de vehículo y proveedor.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Paso 3 -->
-  <div class="node node-highlight">
-    <div class="node-number">Paso 03</div>
-    <div class="node-title">Asignación de atributos técnicos</div>
-    <div class="node-desc">Se configuran los parámetros de compatibilidad, los modos de programación admitidos y las relaciones funcionales con otros módulos de la red CAN Bus del vehículo.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Paso 4 -->
-  <div class="node node-highlight">
-    <div class="node-number">Paso 04</div>
-    <div class="node-title">Vinculación de variantes del módulo</div>
-    <div class="node-desc">Para módulos con múltiples variantes (como los LED Driver A, B, C, D y E), se asegura que cada variante quede correctamente enlazada al vehículo, configuración y versión de HCM correspondiente.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Decision 2 -->
-  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-    <div class="node-decision"><div class="node-title">¿Estructura íntegra sin conflictos?</div></div>
-    <div class="branch-row" style="margin-top:8px">
-      <div class="branch-col">
-        <div class="branch-label label-no">NO</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-reject">
-          <div class="node-title">Corrección de conflictos</div>
-          <div class="node-desc">Se identifican versiones en conflicto, incompatibilidades o atributos incorrectos. Se corrigen y se regresa al Paso 03.</div>
-        </div>
-      </div>
-      <div class="branch-col">
-        <div class="branch-label label-yes">SÍ</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-highlight" style="width:100%">
-          <div class="node-number">Paso 05</div>
-          <div class="node-title">Validación de calidad interna</div>
-          <div class="node-desc">Se verifica la consistencia entre versiones, la alineación con estándares corporativos de Ford y el cumplimiento de los criterios de integridad funcional (ISO 26262).</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Decision 3 -->
-  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-    <div class="node-decision"><div class="node-title">¿Validación de calidad aprobada?</div></div>
-    <div class="branch-row" style="margin-top:8px">
-      <div class="branch-col">
-        <div class="branch-label label-no">NO</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-reject">
-          <div class="node-title">Apertura de ticket interno</div>
-          <div class="node-desc">Se documenta la no conformidad en JIRA, se asigna responsable y se regresa al paso correspondiente para corrección.</div>
-        </div>
-      </div>
-      <div class="branch-col">
-        <div class="branch-label label-yes">SÍ</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-highlight" style="width:100%">
-          <div class="node-number">Paso 06</div>
-          <div class="node-title">Aprobación formal del IVS Engineer</div>
-          <div class="node-desc">El IVS Engineer responsable del módulo emite la aprobación formal dentro de la plataforma, autorizando la publicación del software.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Paso 7 -->
-  <div class="node node-highlight">
-    <div class="node-number">Paso 07</div>
-    <div class="node-title">Publicación en IVS</div>
-    <div class="node-desc">El software se publica en la biblioteca central de IVS. Queda disponible para descarga por parte de los dealers y como fuente para actualizaciones OTA en campo.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Paso 8 -->
-  <div class="node node-highlight">
-    <div class="node-number">Paso 08</div>
-    <div class="node-title">Generación de evidencia y cierre</div>
-    <div class="node-desc">Se documenta el proceso completo en Confluence: fechas, responsables, versión publicada y estatus de cierre. Esta evidencia respalda futuras auditorías internas.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Success -->
-  <div class="node node-success">
-    <div class="node-title">Estructura publicada y disponible en IVS</div>
-    <div class="node-desc">El software está listo para instalación en la red global de dealers y para distribución OTA. El ciclo de creación de estructura concluye exitosamente.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <div class="node node-end"><div class="node-title">FIN</div></div>
-
+<div class="header">
+  <h1>Proceso de Creación de Estructura de Software en IVS NG</h1>
+  <p>IVS Engineering · Weldmation de México · Ford Motor Company</p>
 </div>
 
 <div class="legend">
   <div class="legend-item">
-    <div class="legend-box" style="background:var(--charcoal);border-left:3px solid var(--gold)"></div>
+    <div class="legend-box" style="border:2px solid #B87878; background:white;"></div>
     Etapa del proceso
   </div>
   <div class="legend-item">
-    <div class="legend-box" style="background:var(--charcoal-mid);border-left:3px solid var(--rose-dark)"></div>
-    Responsabilidad IVS Engineering
-  </div>
-  <div class="legend-item"><div class="legend-diamond"></div> Decisión / validación</div>
-  <div class="legend-item">
-    <div class="legend-box" style="background:var(--reject-bg);border-left:3px solid var(--reject-border)"></div>
-    Rechazo / corrección
+    <div class="legend-diamond" style="background:#C9A84C;"></div>
+    Punto de decisión
   </div>
   <div class="legend-item">
-    <div class="legend-box" style="background:#F0FAF4;border-left:3px solid #6BAE8A"></div>
+    <div class="legend-box" style="border:2px solid #C47070; background:#FDF0F0;"></div>
+    Rechazo / Corrección
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="border:2px solid #6B9E78; background:#F0F7F2;"></div>
     Resultado exitoso
+  </div>
+  <div class="legend-item">
+    <div class="legend-box" style="background:#2C2C2C; border-radius:50%;"></div>
+    Inicio / Fin
   </div>
 </div>
 
-<footer>
-  <div class="footer-line"></div>
-  Figura 3 &nbsp;·&nbsp; Reporte de Residencias Profesionales &nbsp;·&nbsp; IVS Engineering
-  <div class="footer-line"></div>
-</footer>
+<div class="diagram-wrap">
+<svg id="diagram" width="860" height="1980" viewBox="0 0 860 1980">
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555555"/>
+    </marker>
+    <marker id="arr-rose" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#B87878"/>
+    </marker>
+    <marker id="arr-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#C47070"/>
+    </marker>
+  </defs>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- COLUMN LABELS -->
+  <!-- ══════════════════════════════════════ -->
+  <rect x="20" y="60" width="180" height="1880" rx="6" fill="#FDF9F9" stroke="#E8DADA" stroke-width="1"/>
+  <rect x="660" y="60" width="180" height="1880" rx="6" fill="#FDF9F9" stroke="#E8DADA" stroke-width="1"/>
+  <text x="110" y="85" class="label-step">Validación</text>
+  <text x="750" y="85" class="label-step">Corrección</text>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 0: INICIO -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-start" data-tip="El proceso inicia cuando D&R emite el SWAD a través de la herramienta SWCM Tool.">
+    <ellipse cx="430" cy="110" rx="54" ry="26"/>
+    <text x="430" y="110" class="label-white">INICIO</text>
+  </g>
+  <line x1="430" y1="136" x2="430" y2="168" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 1: SWAD -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-process" data-tip="El SWAD (Software Announcement Document) es emitido por D&R vía SWCM Tool. Define números de parte, orden de programación, OTA Capable y Signed By: IVS.">
+    <rect x="290" y="170" width="280" height="72" rx="8"/>
+    <text x="430" y="193" class="label-step">Paso 01</text>
+    <text x="430" y="212" class="label-main">Recepción del SWAD</text>
+    <text x="430" y="230" class="label-sub">D&amp;R → SWCM Tool → IVS Engineer</text>
+  </g>
+  <line x1="430" y1="242" x2="430" y2="274" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 2: DECISION ENTREGABLES -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-decision" data-tip="Se verifica que el proveedor haya entregado los 5 entregables obligatorios: Concern en WERS, SW Files, DID Reports, Release Notes y Part II (.mdx).">
+    <polygon points="430,276 560,322 430,368 300,322"/>
+    <text x="430" y="312" class="label-main">¿Entregables</text>
+    <text x="430" y="330" class="label-main">completos?</text>
+  </g>
+
+  <!-- NO → reject -->
+  <line x1="560" y1="322" x2="680" y2="322" class="arrow-red" marker-end="url(#arr-red)"/>
+  <text x="618" y="314" class="edge-label edge-label-no">No</text>
+  <g class="node-reject" data-tip="El paquete se rechaza y se notifica al proveedor con observaciones específicas. El proceso se detiene hasta recibir el paquete corregido.">
+    <rect x="682" y="288" width="156" height="68" rx="8"/>
+    <text x="760" y="314" class="label-main" style="fill:#C47070">Rechazo al</text>
+    <text x="760" y="332" class="label-main" style="fill:#C47070">proveedor</text>
+    <text x="760" y="350" class="label-sub">Notificación + JIRA</text>
+  </g>
+  <!-- back arrow from reject -->
+  <path d="M 760 356 L 760 420 L 210 420 L 210 206 L 290 206" class="arrow-red" marker-end="url(#arr-red)"/>
+  <text x="460" y="415" class="edge-label edge-label-no">Reenvío corregido</text>
+
+  <!-- SÍ ↓ -->
+  <line x1="430" y1="368" x2="430" y2="400" class="arrow" marker-end="url(#arr)"/>
+  <text x="448" y="388" class="edge-label edge-label-yes">Sí</text>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 3: ECU PH -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-process" data-tip="Se crea el ECU Placeholder (ECU PH) bajo el nodo del vehículo en IVS NG. Es el contenedor raíz de toda la estructura del módulo.">
+    <rect x="290" y="402" width="280" height="72" rx="8"/>
+    <text x="430" y="425" class="label-step">Paso 02</text>
+    <text x="430" y="444" class="label-main">Crear ECU Placeholder</text>
+    <text x="430" y="462" class="label-sub">Contenedor raíz del módulo en IVS NG</text>
+  </g>
+  <line x1="430" y1="474" x2="430" y2="506" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 4: CORE ASSEMBLY -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-process" data-tip="Dentro del ECU PH se crea el Core Assembly PH y se carga el DID de Core Assembly. Contiene la información base del hardware del módulo.">
+    <rect x="290" y="508" width="280" height="72" rx="8"/>
+    <text x="430" y="531" class="label-step">Paso 03</text>
+    <text x="430" y="550" class="label-main">Crear Core Assembly PH</text>
+    <text x="430" y="568" class="label-sub">+ DID de Core Assembly</text>
+  </g>
+  <line x1="430" y1="580" x2="430" y2="612" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 5: CPU PH -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-process" data-tip="El CPU PH es el contenedor del software ejecutable del módulo. Dentro de él se alojan los DIDs principales: Secondary Bootloader, Boot Image, Recovery Image y Strategy.">
+    <rect x="290" y="614" width="280" height="72" rx="8"/>
+    <text x="430" y="637" class="label-step">Paso 04</text>
+    <text x="430" y="656" class="label-main">Crear CPU Placeholder</text>
+    <text x="430" y="674" class="label-sub">Contenedor del software ejecutable</text>
+  </g>
+  <line x1="430" y1="686" x2="430" y2="718" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 6: DIDs dentro CPU -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-process" data-tip="Dentro del CPU PH se crean los DIDs según el SWAD: Secondary Bootloader PH, Boot Image PH, Recovery Image PH y Strategy PH con su archivo .vbf (software que instala el dealer).">
+    <rect x="290" y="720" width="280" height="82" rx="8"/>
+    <text x="430" y="741" class="label-step">Paso 05</text>
+    <text x="430" y="760" class="label-main">Cargar DIDs en CPU PH</text>
+    <text x="430" y="778" class="label-sub">Secondary Bootloader · Boot Image</text>
+    <text x="430" y="794" class="label-sub">Recovery Image · Strategy (.vbf)</text>
+  </g>
+  <line x1="430" y1="802" x2="430" y2="834" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 7: DECISION BASE CONFIG -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-decision" data-tip="El SWAD especifica si el módulo requiere Base Configuration y/o Calibration dentro del Strategy PH. Estos DIDs son opcionales según el módulo.">
+    <polygon points="430,836 560,882 430,928 300,882"/>
+    <text x="430" y="872" class="label-main">¿Requiere Base Config</text>
+    <text x="430" y="890" class="label-main">o Calibration?</text>
+  </g>
+
+  <!-- SÍ → side branch -->
+  <line x1="300" y1="882" x2="210" y2="882" class="arrow" marker-end="url(#arr)"/>
+  <text x="252" y="874" class="edge-label edge-label-yes">Sí</text>
+  <g class="node-process" data-tip="Se crean Base Configuration PH y/o Calibration PH dentro del Strategy PH, con sus respectivos DIDs según el SWAD.">
+    <rect x="28" y="852" width="180" height="60" rx="8"/>
+    <text x="118" y="875" class="label-main" style="font-size:12px">Crear Base Config PH</text>
+    <text x="118" y="893" class="label-main" style="font-size:12px">y/o Calibration PH</text>
+    <text x="118" y="908" class="label-sub">(dentro de Strategy PH)</text>
+  </g>
+  <!-- rejoin -->
+  <path d="M 118 912 L 118 966 L 290 966" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- NO ↓ -->
+  <line x1="430" y1="928" x2="430" y2="952" class="arrow" marker-end="url(#arr)"/>
+  <text x="448" y="944" class="edge-label edge-label-no">No</text>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 8: PART II -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-process" data-tip="El Part II es el único DID obligatorio en todos los módulos sin excepción. Es un archivo .mdx con información complementaria de identificación del software.">
+    <rect x="290" y="954" width="280" height="72" rx="8"/>
+    <text x="430" y="977" class="label-step">Paso 06</text>
+    <text x="430" y="996" class="label-main">Cargar Part II (.mdx)</text>
+    <text x="430" y="1014" class="label-sub">Obligatorio en todos los módulos</text>
+  </g>
+  <line x1="430" y1="1026" x2="430" y2="1058" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 9: BOM MANAGEMENT -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-process" data-tip="En la pantalla de BOM Management se asignan los DIDs al Assembly: Core Assembly, Strategy, Base Config (si aplica), Calibration (si aplica) y Part II.">
+    <rect x="290" y="1060" width="280" height="82" rx="8"/>
+    <text x="430" y="1081" class="label-step">Paso 07</text>
+    <text x="430" y="1100" class="label-main">BOM Management</text>
+    <text x="430" y="1118" class="label-sub">Asignar DIDs al Assembly</text>
+    <text x="430" y="1134" class="label-sub">Available Parts → Assigned Parts</text>
+  </g>
+  <line x1="430" y1="1142" x2="430" y2="1174" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 10: VALIDACIÓN PRE-FREEZE -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-decision" data-tip="Verificación final antes del freeze: DIDs obligatorios presentes, Part II cargado, OTA Capable configurado según SWAD y campo Signed By: IVS confirmado.">
+    <polygon points="430,1176 560,1232 430,1288 300,1232"/>
+    <text x="430" y="1220" class="label-main">¿Validación</text>
+    <text x="430" y="1238" class="label-main">pre-freeze OK?</text>
+  </g>
+
+  <!-- NO → reject right -->
+  <line x1="560" y1="1232" x2="680" y2="1232" class="arrow-red" marker-end="url(#arr-red)"/>
+  <text x="618" y="1224" class="edge-label edge-label-no">No</text>
+  <g class="node-reject" data-tip="Se identifican los DIDs faltantes o incorrectos y se corrige la estructura antes de proceder al freeze.">
+    <rect x="682" y="1198" width="156" height="68" rx="8"/>
+    <text x="760" y="1222" class="label-main" style="fill:#C47070">Corregir</text>
+    <text x="760" y="1240" class="label-main" style="fill:#C47070">estructura</text>
+    <text x="760" y="1258" class="label-sub">Revisar SWAD</text>
+  </g>
+  <path d="M 760 1266 L 760 1330 L 650 1330 L 650 1096 L 570 1096" class="arrow-red" marker-end="url(#arr-red)"/>
+
+  <!-- SÍ ↓ -->
+  <line x1="430" y1="1288" x2="430" y2="1320" class="arrow" marker-end="url(#arr)"/>
+  <text x="448" y="1308" class="edge-label edge-label-yes">Sí</text>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 11: FREEZE -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-process" data-tip="El freeze publica y bloquea la estructura. Todos los DIDs quedan marcados con el sufijo (frz). A partir de este momento el software está disponible para dealers y actualizaciones OTA.">
+    <rect x="270" y="1322" width="320" height="82" rx="8" style="stroke:#D4A0A0; stroke-width:3; fill:#FDF5F5;"/>
+    <text x="430" y="1343" class="label-step">Paso 08</text>
+    <text x="430" y="1365" class="label-main" style="fill:#B87878; font-size:15px">Ejecutar Freeze</text>
+    <text x="430" y="1385" class="label-sub">Estructura publicada · DIDs marcados (frz)</text>
+    <text x="430" y="1398" class="label-sub">Bloqueada para modificaciones</text>
+  </g>
+  <line x1="430" y1="1404" x2="430" y2="1436" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP 12: DISPONIBLE -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-success" data-tip="La estructura publicada está disponible globalmente para dealers autorizados de Ford Motor Company y para distribución OTA si el campo OTA Capable está activo.">
+    <rect x="290" y="1438" width="280" height="72" rx="8"/>
+    <text x="430" y="1461" class="label-step" style="color:#6B9E78; fill:#6B9E78">Resultado</text>
+    <text x="430" y="1480" class="label-main" style="fill:#4A7A57">Software disponible</text>
+    <text x="430" y="1498" class="label-sub">Red global de dealers + OTA</text>
+  </g>
+  <line x1="430" y1="1510" x2="430" y2="1542" class="arrow" marker-end="url(#arr)"/>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP FIN -->
+  <!-- ══════════════════════════════════════ -->
+  <g class="node-end" data-tip="Proceso completado. La estructura queda registrada en IVS NG con historial de versionado, fecha de freeze e IVS Engineer responsable.">
+    <ellipse cx="430" cy="1562" rx="54" ry="26"/>
+    <text x="430" y="1562" class="label-white">FIN</text>
+  </g>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- STEP NOTA OTA -->
+  <!-- ══════════════════════════════════════ -->
+  <rect x="80" y="1610" width="700" height="56" rx="8" fill="#F7F3F3" stroke="#E8DADA" stroke-width="1"/>
+  <text x="430" y="1632" class="label-sub" style="font-size:12px; font-weight:600; fill:#B87878">Nota importante:</text>
+  <text x="430" y="1652" class="label-sub" style="font-size:12px">Si el campo OTA Capable está activo en el SWAD, la estructura publicada puede distribuirse remotamente a miles de vehículos simultáneamente.</text>
+
+</svg>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+  const tooltip = document.getElementById('tooltip');
+  const nodes = document.querySelectorAll('[data-tip]');
+
+  nodes.forEach(node => {
+    node.style.cursor = 'pointer';
+
+    node.addEventListener('mouseenter', (e) => {
+      tooltip.textContent = node.dataset.tip;
+      tooltip.classList.add('visible');
+    });
+
+    node.addEventListener('mousemove', (e) => {
+      let x = e.clientX + 16;
+      let y = e.clientY + 16;
+      if (x + 270 > window.innerWidth) x = e.clientX - 280;
+      if (y + 80 > window.innerHeight) y = e.clientY - 80;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top  = y + 'px';
+    });
+
+    node.addEventListener('mouseleave', () => {
+      tooltip.classList.remove('visible');
+    });
+  });
+</script>
 
 </body>
 </html>

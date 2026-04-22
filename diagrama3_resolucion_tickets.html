@@ -3,314 +3,312 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagrama 3 – Proceso de Resolución de Tickets</title>
+<title>Proceso de Resolución de Tickets de Incidencias</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --charcoal: #2C2C2C;
-    --charcoal-mid: #3E3E3E;
-    --charcoal-light: #5A5A5A;
-    --rose: #D4A5A5;
-    --rose-dark: #B87878;
-    --rose-pale: #F5EAEA;
-    --rose-mid: #E8CECE;
-    --gold: #C9A84C;
-    --gold-light: #E8D49A;
-    --cream: #FDF8F4;
-    --white: #FFFFFF;
-    --reject-bg: #FDF0F0;
-    --reject-border: #C47A7A;
-    --reject-text: #8B3A3A;
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'DM Sans', sans-serif;
+    --rose:    #D4A0A0;
+    --rose-dk: #B87878;
+    --gold:    #C9A84C;
+    --charcoal:#2C2C2C;
+    --gray:    #555555;
+    --lgray:   #F7F3F3;
+    --white:   #FFFFFF;
+    --green:   #6B9E78;
+    --red:     #C47070;
+    --blue:    #7A9BBF;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--charcoal); }
 
-  body {
-    background: var(--cream);
-    font-family: var(--font-body);
-    min-height: 100vh;
-    padding: 48px 24px 64px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .header {
+    background: var(--charcoal);
+    padding: 20px 40px 16px;
+    border-bottom: 4px solid var(--rose);
+    display: flex; align-items: baseline; gap: 20px;
   }
+  .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--white); }
+  .header p  { font-size: 12px; color: var(--rose); letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
 
-  header { text-align: center; margin-bottom: 52px; }
-
-  .header-ornament { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 18px; }
-  .ornament-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
-  .ornament-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
-  .ornament-diamond { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); }
-
-  .header-label { font-size: 10px; font-weight: 500; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
-  header h1 { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--charcoal); line-height: 1.2; margin-bottom: 8px; }
-  header p { font-size: 13px; color: var(--charcoal-light); font-weight: 300; }
-
-  .diagram { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 560px; }
-
-  .node { width: 100%; border-radius: 4px; padding: 16px 22px; animation: fadeDown 0.5s ease both; }
-
-  .node-process { background: var(--charcoal); border-left: 3px solid var(--gold); }
-  .node-process .node-number { font-size: 9px; font-weight: 500; color: var(--gold-light); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
-  .node-process .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 5px; line-height: 1.3; }
-  .node-process .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
-
-  .node-highlight { background: var(--charcoal-mid); border-left: 3px solid var(--rose-dark); }
-  .node-highlight .node-number { font-size: 9px; font-weight: 500; color: var(--rose); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
-  .node-highlight .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--rose-mid); margin-bottom: 5px; line-height: 1.3; }
-  .node-highlight .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
-
-  .node-decision {
-    background: var(--rose-pale); border: 1.5px solid var(--rose-dark);
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-    width: 220px; height: 92px;
-    display: flex; align-items: center; justify-content: center;
-    align-self: center; padding: 0;
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 20px;
+    padding: 10px 40px; background: var(--lgray);
+    border-bottom: 1px solid #E8DADA; align-items: center;
   }
-  .node-decision .node-title { font-size: 11px; font-weight: 600; color: var(--rose-dark); text-align: center; padding: 0 40px; line-height: 1.4; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--gray); font-weight: 500; }
+  .lb { width: 18px; height: 18px; border-radius: 3px; flex-shrink: 0; }
+  .ld { width: 14px; height: 14px; transform: rotate(45deg); flex-shrink: 0; border-radius: 2px; }
 
-  .node-reject { background: var(--reject-bg); border-left: 3px solid var(--reject-border); border-radius: 4px; padding: 12px 16px; width: 100%; }
-  .node-reject .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--reject-text); margin-bottom: 3px; }
-  .node-reject .node-desc { font-size: 11px; color: #A05050; font-weight: 300; line-height: 1.5; }
+  .diagram-wrap { padding: 32px 40px 40px; overflow: auto; }
+  svg { display: block; margin: 0 auto; }
 
-  .node-escalation { background: #FFF8EC; border-left: 3px solid var(--gold); border-radius: 4px; padding: 12px 16px; width: 100%; }
-  .node-escalation .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #7A5A10; margin-bottom: 3px; }
-  .node-escalation .node-desc { font-size: 11px; color: #9A7A30; font-weight: 300; line-height: 1.5; }
+  .np:hover rect   { filter: drop-shadow(0 3px 10px rgba(180,120,120,0.3)); cursor: pointer; }
+  .nv:hover rect   { filter: drop-shadow(0 3px 10px rgba(122,155,191,0.3)); cursor: pointer; }
+  .nr:hover rect   { filter: drop-shadow(0 3px 10px rgba(196,112,112,0.3)); cursor: pointer; }
+  .nd:hover polygon{ filter: drop-shadow(0 3px 10px rgba(201,168,76,0.3));  cursor: pointer; }
+  .ns:hover ellipse{ filter: drop-shadow(0 3px 10px rgba(107,158,120,0.3)); cursor: pointer; }
 
-  .node-success { background: #F0FAF4; border-left: 3px solid #6BAE8A; border-radius: 4px; padding: 12px 16px; width: 100%; }
-  .node-success .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #2D6A4F; margin-bottom: 3px; }
-  .node-success .node-desc { font-size: 11px; color: #3A8A5A; font-weight: 300; line-height: 1.5; }
-
-  .node-start {
-    background: linear-gradient(135deg, var(--rose-dark), var(--gold));
-    border-radius: 40px; width: 200px; align-self: center;
-    text-align: center; padding: 14px 28px;
-    box-shadow: 0 4px 20px rgba(201,168,76,0.25);
+  .tooltip {
+    position: fixed; background: var(--charcoal); color: var(--white);
+    padding: 9px 13px; border-radius: 7px; font-size: 12px;
+    max-width: 240px; line-height: 1.5; pointer-events: none;
+    opacity: 0; transition: opacity 0.15s; z-index: 100;
+    border-left: 3px solid var(--rose);
   }
-  .node-start .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 3px; }
+  .tooltip.on { opacity: 1; }
 
-  .node-end {
-    background: var(--charcoal); border: 1.5px solid var(--gold);
-    border-radius: 40px; width: 200px; align-self: center;
-    text-align: center; padding: 14px 28px;
+  @media print {
+    @page { size: A4 landscape; margin: 10mm; }
+    .header, .legend { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .tooltip { display: none; }
   }
-  .node-end .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--gold); letter-spacing: 3px; }
-
-  /* Ticket source badge */
-  .ticket-sources {
-    display: flex; gap: 8px; width: 100%; margin-bottom: 6px;
-  }
-  .ticket-source {
-    flex: 1; background: var(--charcoal); border: 1px solid var(--rose-dark);
-    border-radius: 4px; padding: 10px 12px; text-align: center;
-  }
-  .ticket-source .ts-label { font-size: 9px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: var(--rose); margin-bottom: 4px; }
-  .ticket-source .ts-title { font-size: 12px; font-weight: 600; color: var(--white); line-height: 1.3; font-family: var(--font-display); }
-
-  .arrow { display: flex; flex-direction: column; align-items: center; }
-  .arrow-line { width: 1.5px; height: 26px; background: var(--gold); opacity: 0.7; }
-  .arrow-head { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid var(--gold); opacity: 0.8; }
-
-  .branch-row { display: flex; width: 100%; justify-content: space-between; align-items: flex-start; gap: 10px; }
-  .branch-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
-
-  .branch-label { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase; }
-  .label-yes { background: var(--rose-pale); color: var(--rose-dark); border: 1px solid var(--rose-dark); }
-  .label-no { background: var(--reject-bg); color: var(--reject-text); border: 1px solid var(--reject-border); }
-
-  .legend { display: flex; gap: 18px; margin-top: 44px; flex-wrap: wrap; justify-content: center; }
-  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--charcoal-light); }
-  .legend-box { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
-  .legend-diamond { width: 12px; height: 12px; background: var(--rose-pale); border: 1.5px solid var(--rose-dark); transform: rotate(45deg); flex-shrink: 0; }
-
-  footer { margin-top: 48px; display: flex; align-items: center; gap: 12px; font-size: 10px; color: var(--charcoal-light); letter-spacing: 2px; text-transform: uppercase; }
-  .footer-line { width: 40px; height: 1px; background: var(--gold); opacity: 0.5; }
-
-  @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-label">Figura 4 — Diagrama de Flujo</div>
-  <div class="header-ornament">
-    <div class="ornament-line"></div>
-    <div class="ornament-diamond"></div>
-    <div class="ornament-line right"></div>
-  </div>
+<div class="header">
   <h1>Proceso de Resolución de Tickets de Incidencias</h1>
-  <p>Gestión de fallas de software detectadas en vehículos de producción y postventa</p>
-</header>
-
-<div class="diagram">
-
-  <div class="node node-start"><div class="node-title">INICIO</div></div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Fuentes del ticket -->
-  <div style="width:100%">
-    <div style="font-size:9px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--gold-light);margin-bottom:8px;text-align:center;">Origen del ticket</div>
-    <div class="ticket-sources">
-      <div class="ticket-source">
-        <div class="ts-label">Fuente 01</div>
-        <div class="ts-title">Falla detectada en producción</div>
-      </div>
-      <div class="ticket-source">
-        <div class="ts-label">Fuente 02</div>
-        <div class="ts-title">Incidencia en vehículo postventa</div>
-      </div>
-      <div class="ticket-source">
-        <div class="ts-label">Fuente 03</div>
-        <div class="ts-title">Error interno en estructura IVS</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Paso 1 -->
-  <div class="node node-highlight">
-    <div class="node-number">Paso 01</div>
-    <div class="node-title">Recepción y registro del ticket en JIRA</div>
-    <div class="node-desc">El ticket es recibido y registrado en JIRA con descripción del problema, módulo afectado, número de vehículo o VIN, y prioridad asignada según el impacto potencial.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Paso 2 -->
-  <div class="node node-highlight">
-    <div class="node-number">Paso 02</div>
-    <div class="node-title">Análisis del módulo afectado</div>
-    <div class="node-desc">Se revisa la estructura del módulo en IVS: versión activa, relaciones con otros módulos, historial de cambios y deliverables asociados. Se consulta Confluence para identificar precedentes similares.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Decision 1 -->
-  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-    <div class="node-decision"><div class="node-title">¿Se identifica la causa raíz?</div></div>
-    <div class="branch-row" style="margin-top:8px">
-      <div class="branch-col">
-        <div class="branch-label label-no">NO</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-escalation">
-          <div class="node-title">Escalación al equipo técnico</div>
-          <div class="node-desc">Se escala el ticket al equipo de ingeniería senior o al área técnica del OEM. Se documenta el análisis previo realizado.</div>
-        </div>
-      </div>
-      <div class="branch-col">
-        <div class="branch-label label-yes">SÍ</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-highlight" style="width:100%">
-          <div class="node-number">Paso 03</div>
-          <div class="node-title">Documentación de causa raíz</div>
-          <div class="node-desc">Se documenta la causa raíz identificada en JIRA: versión incorrecta, estructura mal configurada, deliverable incompleto, incompatibilidad entre módulos u otro origen.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Decision 2 -->
-  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-    <div class="node-decision"><div class="node-title">¿Requiere corrección en IVS?</div></div>
-    <div class="branch-row" style="margin-top:8px">
-      <div class="branch-col">
-        <div class="branch-label label-no">NO</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-escalation">
-          <div class="node-title">Notificación al proveedor</div>
-          <div class="node-desc">Si la causa raíz está en el software del proveedor, se emite notificación formal solicitando un nuevo deliverable corregido.</div>
-        </div>
-      </div>
-      <div class="branch-col">
-        <div class="branch-label label-yes">SÍ</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-highlight" style="width:100%">
-          <div class="node-number">Paso 04</div>
-          <div class="node-title">Corrección de estructura en IVS</div>
-          <div class="node-desc">Se aplica la corrección directamente en la plataforma IVS: actualización de versión, corrección de atributos, reconfiguración de relaciones entre módulos o reasignación de variantes.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Paso 5 -->
-  <div class="node node-highlight">
-    <div class="node-number">Paso 05</div>
-    <div class="node-title">Validación de la corrección aplicada</div>
-    <div class="node-desc">Se verifica que la corrección resuelve el problema reportado sin generar nuevos conflictos en la estructura. Se revisan los módulos relacionados que pudieran verse afectados.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Decision 3 -->
-  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-    <div class="node-decision"><div class="node-title">¿Dealer puede instalar el software corregido?</div></div>
-    <div class="branch-row" style="margin-top:8px">
-      <div class="branch-col">
-        <div class="branch-label label-no">NO</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-reject">
-          <div class="node-title">Revisión adicional</div>
-          <div class="node-desc">Se identifican los obstáculos que impiden la instalación y se regresa al Paso 04 para una corrección adicional.</div>
-        </div>
-      </div>
-      <div class="branch-col">
-        <div class="branch-label label-yes">SÍ</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-highlight" style="width:100%">
-          <div class="node-number">Paso 06</div>
-          <div class="node-title">Cierre y documentación final</div>
-          <div class="node-desc">Se cierra el ticket en JIRA con estatus resuelto. Se documenta la solución completa en Confluence como base de conocimiento para incidencias futuras similares.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <div class="node node-success">
-    <div class="node-title">Incidencia resuelta y software operando correctamente</div>
-    <div class="node-desc">El vehículo puede ser atendido por el dealer con el software corregido. El proceso de resolución de ticket concluye exitosamente.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <div class="node node-end"><div class="node-title">FIN</div></div>
-
+  <p>IVS Engineering · Weldmation de México</p>
 </div>
 
 <div class="legend">
-  <div class="legend-item">
-    <div class="legend-box" style="background:var(--charcoal);border-left:3px solid var(--gold)"></div>
-    Etapa del proceso
-  </div>
-  <div class="legend-item">
-    <div class="legend-box" style="background:var(--charcoal-mid);border-left:3px solid var(--rose-dark)"></div>
-    Responsabilidad IVS Engineering
-  </div>
-  <div class="legend-item"><div class="legend-diamond"></div> Decisión / validación</div>
-  <div class="legend-item">
-    <div class="legend-box" style="background:var(--reject-bg);border-left:3px solid var(--reject-border)"></div>
-    Rechazo / revisión
-  </div>
-  <div class="legend-item">
-    <div class="legend-box" style="background:#FFF8EC;border-left:3px solid var(--gold)"></div>
-    Escalación / notificación
-  </div>
-  <div class="legend-item">
-    <div class="legend-box" style="background:#F0FAF4;border-left:3px solid #6BAE8A"></div>
-    Resultado exitoso
-  </div>
+  <div class="legend-item"><div class="lb" style="border:2px solid #B87878;background:white;"></div>Etapa del proceso</div>
+  <div class="legend-item"><div class="lb" style="border:2px solid #7A9BBF;background:#F0F5FA;"></div>Origen del ticket</div>
+  <div class="legend-item"><div class="ld" style="background:#C9A84C;"></div>Punto de decisión</div>
+  <div class="legend-item"><div class="lb" style="border:2px solid #C47070;background:#FDF0F0;"></div>Escalación / Corrección</div>
+  <div class="legend-item"><div class="lb" style="border:2px solid #6B9E78;background:#F0F7F2;"></div>Resultado exitoso</div>
 </div>
 
-<footer>
-  <div class="footer-line"></div>
-  Figura 4 &nbsp;·&nbsp; Reporte de Residencias Profesionales &nbsp;·&nbsp; IVS Engineering
-  <div class="footer-line"></div>
-</footer>
+<div class="diagram-wrap">
+<svg width="1060" height="900" viewBox="0 0 1060 900">
+<defs>
+  <marker id="a"  markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#555"/></marker>
+  <marker id="ar" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#C47070"/></marker>
+  <marker id="ag" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#6B9E78"/></marker>
+  <marker id="ab" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#7A9BBF"/></marker>
+</defs>
 
+<!-- ── COLUMN BACKGROUNDS ── -->
+<rect x="20"  y="10" width="500" height="880" rx="8" fill="#FDFAFA" stroke="#EAD8D8" stroke-width="1"/>
+<rect x="540" y="10" width="500" height="880" rx="8" fill="#F9FAFB" stroke="#D8E2EA" stroke-width="1"/>
+<text x="270" y="32" font-family="DM Sans" font-size="11" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="1">FLUJO PRINCIPAL</text>
+<text x="790" y="32" font-family="DM Sans" font-size="11" font-weight="600" fill="#7A9BBF" text-anchor="middle" letter-spacing="1">DECISIONES Y ESCALACIONES</text>
+
+<!-- ── CONCERN BADGE ── -->
+<rect x="28" y="430" width="484" height="70" rx="6" fill="none" stroke="#C47070" stroke-width="1.5" stroke-dasharray="6,3"/>
+<text x="48" y="448" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" letter-spacing="0.5">⚠ CONCERN — TIEMPO MÁXIMO DE RESOLUCIÓN: 48 HORAS</text>
+
+<!-- ════════════════════════════════
+     LEFT — MAIN FLOW
+     ════════════════════════════════ -->
+
+<!-- INICIO -->
+<ellipse cx="270" cy="62" rx="60" ry="24" fill="#2C2C2C"/>
+<text x="270" y="62" font-family="DM Sans" font-size="13" font-weight="600" fill="white" text-anchor="middle" dominant-baseline="middle">INICIO</text>
+<line x1="270" y1="86" x2="270" y2="108" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- ORIGEN: 3 fuentes -->
+<rect x="80" y="110" width="380" height="30" rx="6" fill="#F0F5FA" stroke="#7A9BBF" stroke-width="1.5"/>
+<text x="270" y="129" font-family="DM Sans" font-size="11" font-weight="600" fill="#7A9BBF" text-anchor="middle" letter-spacing="0.5">ORIGEN DEL TICKET</text>
+
+<!-- 3 source boxes -->
+<g class="nv" data-tip="Falla detectada durante el proceso de EOL (End of Line) en la línea de ensamble. El vehículo aún está en planta.">
+  <rect x="32"  y="150" width="148" height="54" rx="6" fill="#F0F5FA" stroke="#7A9BBF" stroke-width="1.5"/>
+  <text x="106" y="170" font-family="DM Sans" font-size="11" font-weight="600" fill="#7A9BBF" text-anchor="middle">Spotcheck</text>
+  <text x="106" y="186" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">Falla en EOL</text>
+  <text x="106" y="199" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">(línea de producción)</text>
+</g>
+<g class="nv" data-tip="Incidencia en vehículo con propietario o listo para entrega al cliente. Tiempo máximo de resolución: 48 horas.">
+  <rect x="196" y="150" width="148" height="54" rx="6" fill="#FDF5F0" stroke="#C47070" stroke-width="1.5"/>
+  <text x="270" y="170" font-family="DM Sans" font-size="11" font-weight="600" fill="#C47070" text-anchor="middle">Concern</text>
+  <text x="270" y="186" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">Vehículo con propietario</text>
+  <text x="270" y="199" font-family="DM Sans" font-size="10" fill="#C47070" text-anchor="middle">⚠ Máx. 48 horas</text>
+</g>
+<g class="nv" data-tip="Error detectado internamente en la estructura de IVS NG durante el proceso de validación o mantenimiento.">
+  <rect x="360" y="150" width="148" height="54" rx="6" fill="#F0F5FA" stroke="#7A9BBF" stroke-width="1.5"/>
+  <text x="434" y="170" font-family="DM Sans" font-size="11" font-weight="600" fill="#7A9BBF" text-anchor="middle">Error interno</text>
+  <text x="434" y="186" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">Estructura IVS</text>
+  <text x="434" y="199" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">detectado internamente</text>
+</g>
+
+<!-- arrows from 3 sources to P1 -->
+<line x1="106" y1="204" x2="200" y2="234" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="270" y1="204" x2="270" y2="234" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+<line x1="434" y1="204" x2="340" y2="234" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+
+<!-- P1: Recepción y registro -->
+<g class="np" data-tip="El ticket se recibe y registra en JIRA con: módulo afectado, tipo (Spotcheck o Concern), descripción del problema y fecha de inicio del cronómetro en Concerns.">
+  <rect x="120" y="236" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="257" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">PASO 01</text>
+  <text x="270" y="276" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Recepción y registro</text>
+  <text x="270" y="293" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">del ticket en JIRA</text>
+</g>
+<line x1="270" y1="300" x2="270" y2="322" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- P2: Análisis módulo -->
+<g class="np" data-tip="Se revisa la estructura activa del módulo afectado en IVS NG: versiones de DIDs, jerarquía de Placeholders, asignaciones en BOM Management y compatibilidad CAN Bus.">
+  <rect x="120" y="324" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="345" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">PASO 02</text>
+  <text x="270" y="364" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Análisis del módulo afectado</text>
+  <text x="270" y="381" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">Revisión de estructura en IVS NG</text>
+</g>
+<line x1="270" y1="388" x2="270" y2="410" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- P3: Documentación causa raíz -->
+<g class="np" data-tip="Se identifica y documenta la causa raíz: DID mal configurado, versión incompatible entre módulos CAN Bus, entregable no conforme del proveedor u otro origen.">
+  <rect x="120" y="412" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="433" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">PASO 03</text>
+  <text x="270" y="452" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Documentación de causa raíz</text>
+  <text x="270" y="469" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">en JIRA</text>
+</g>
+<line x1="270" y1="476" x2="270" y2="498" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- P4: Corrección en IVS -->
+<g class="np" data-tip="Se aplica la corrección directamente en IVS NG: se modifican los DIDs incorrectos, se actualizan asignaciones en BOM Management o se reemplaza el archivo de software.">
+  <rect x="120" y="500" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="521" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">PASO 04</text>
+  <text x="270" y="540" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Corrección en IVS NG</text>
+  <text x="270" y="557" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">Modificación de estructura o DIDs</text>
+</g>
+<line x1="270" y1="564" x2="270" y2="586" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- P5: Validación -->
+<g class="np" data-tip="Se valida que la corrección aplicada resuelve el problema: se verifica la estructura en IVS NG y se confirma que el dealer puede instalar el software corregido en el vehículo.">
+  <rect x="120" y="588" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="609" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">PASO 05</text>
+  <text x="270" y="628" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Validación de la corrección</text>
+  <text x="270" y="645" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">Confirmación con dealer</text>
+</g>
+<line x1="270" y1="652" x2="270" y2="674" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- P6: Cierre -->
+<g class="np" data-tip="Se documenta la solución completa en JIRA y se cierra el ticket. La solución queda registrada en Confluence como base de conocimiento para incidencias futuras.">
+  <rect x="120" y="676" width="300" height="64" rx="7" fill="#FDF5F5" stroke="#D4A0A0" stroke-width="3"/>
+  <text x="270" y="697" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">PASO 06</text>
+  <text x="270" y="716" font-family="DM Sans" font-size="13" font-weight="600" fill="#B87878" text-anchor="middle">Cierre y documentación final</text>
+  <text x="270" y="733" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">JIRA + Confluence</text>
+</g>
+<line x1="270" y1="740" x2="270" y2="762" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- FIN -->
+<g>
+  <rect x="120" y="764" width="300" height="54" rx="7" fill="#F0F7F2" stroke="#6B9E78" stroke-width="2"/>
+  <text x="270" y="785" font-family="DM Sans" font-size="10" font-weight="600" fill="#6B9E78" text-anchor="middle" letter-spacing="0.5">RESULTADO</text>
+  <text x="270" y="804" font-family="DM Sans" font-size="12" font-weight="600" fill="#4A7A57" text-anchor="middle">Incidencia resuelta · Software operando ✓</text>
+</g>
+
+<!-- ════════════════════════════════
+     RIGHT — DECISIONS
+     ════════════════════════════════ -->
+
+<!-- ── DECISION 1: Se identifica causa raíz? (from P2) ── -->
+<line x1="420" y1="356" x2="538" y2="356" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#a)"/>
+<text x="479" y="348" font-family="DM Sans" font-size="10" font-weight="600" fill="#C9A84C" text-anchor="middle">Evaluar</text>
+
+<g class="nd" data-tip="Si el IVS Engineer no puede identificar la causa raíz por sí solo, escala al equipo técnico senior o al proveedor para análisis conjunto.">
+  <polygon points="700,320 820,356 700,392 580,356" fill="white" stroke="#C9A84C" stroke-width="2"/>
+  <text x="700" y="348" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">¿Se identifica</text>
+  <text x="700" y="366" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">la causa raíz?</text>
+</g>
+
+<!-- Sí -->
+<line x1="700" y1="392" x2="700" y2="412" stroke="#6B9E78" stroke-width="1.5" marker-end="url(#ag)"/>
+<text x="716" y="406" font-family="DM Sans" font-size="11" font-weight="600" fill="#6B9E78">Sí ↓</text>
+<rect x="600" y="414" width="200" height="36" rx="6" fill="#F0F7F2" stroke="#6B9E78" stroke-width="1.5"/>
+<text x="700" y="436" font-family="DM Sans" font-size="11" font-weight="500" fill="#4A7A57" text-anchor="middle">Documentar y continuar ✓</text>
+
+<!-- No → escalación -->
+<line x1="820" y1="356" x2="892" y2="356" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ar)"/>
+<text x="854" y="348" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">No</text>
+<g class="nr" data-tip="Se escala al equipo técnico senior o al proveedor para análisis conjunto. En Concerns la escalación debe ser inmediata para no perder tiempo dentro de las 48 horas.">
+  <rect x="894" y="326" width="146" height="60" rx="6" fill="#FDF0F0" stroke="#C47070" stroke-width="2"/>
+  <text x="967" y="348" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">Escalación al</text>
+  <text x="967" y="366" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">equipo técnico</text>
+  <text x="967" y="381" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">o proveedor</text>
+</g>
+<!-- loop back -->
+<path d="M 967 386 L 967 280 L 420 280" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#ar)"/>
+<text x="750" y="272" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">Reanálisis con soporte</text>
+
+<!-- ── DECISION 2: Requiere corrección en IVS? (from P3) ── -->
+<line x1="420" y1="532" x2="538" y2="532" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#a)"/>
+<text x="479" y="524" font-family="DM Sans" font-size="10" font-weight="600" fill="#C9A84C" text-anchor="middle">Evaluar</text>
+
+<g class="nd" data-tip="Si la causa raíz es un error del proveedor (archivo .vbf incorrecto, checksum inválido) se notifica al proveedor para que reenvíe el entregable corregido.">
+  <polygon points="700,496 820,532 700,568 580,532" fill="white" stroke="#C9A84C" stroke-width="2"/>
+  <text x="700" y="524" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">¿Requiere corrección</text>
+  <text x="700" y="542" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">en IVS o proveedor?</text>
+</g>
+
+<!-- IVS -->
+<line x1="700" y1="568" x2="700" y2="588" stroke="#6B9E78" stroke-width="1.5" marker-end="url(#ag)"/>
+<text x="716" y="582" font-family="DM Sans" font-size="10" font-weight="600" fill="#6B9E78">IVS ↓</text>
+<rect x="590" y="590" width="220" height="36" rx="6" fill="#F0F7F2" stroke="#6B9E78" stroke-width="1.5"/>
+<text x="700" y="612" font-family="DM Sans" font-size="11" font-weight="500" fill="#4A7A57" text-anchor="middle">Corregir estructura en IVS NG</text>
+
+<!-- Proveedor -->
+<line x1="820" y1="532" x2="892" y2="532" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ar)"/>
+<text x="854" y="522" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">Proveedor</text>
+<g class="nr" data-tip="Si el error es del proveedor se le notifica formalmente y se solicita el entregable corregido. Se registra en JIRA y se espera el reenvío.">
+  <rect x="894" y="502" width="146" height="60" rx="6" fill="#FDF0F0" stroke="#C47070" stroke-width="2"/>
+  <text x="967" y="524" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">Notificación al</text>
+  <text x="967" y="542" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">proveedor</text>
+  <text x="967" y="556" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">Solicitar reenvío</text>
+</g>
+
+<!-- ── DECISION 3: Dealer puede instalar? (from P5) ── -->
+<line x1="420" y1="620" x2="538" y2="620" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#a)"/>
+<text x="479" y="612" font-family="DM Sans" font-size="10" font-weight="600" fill="#C9A84C" text-anchor="middle">Confirmar</text>
+
+<g class="nd" data-tip="Se verifica con el dealer que puede instalar el software corregido en el vehículo. Si hay problemas de instalación se realiza una revisión adicional de la estructura.">
+  <polygon points="700,584 820,620 700,656 580,620" fill="white" stroke="#C9A84C" stroke-width="2"/>
+  <text x="700" y="612" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">¿Dealer puede</text>
+  <text x="700" y="630" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">instalar el SW?</text>
+</g>
+
+<!-- Sí -->
+<line x1="700" y1="656" x2="700" y2="676" stroke="#6B9E78" stroke-width="1.5" marker-end="url(#ag)"/>
+<text x="716" y="670" font-family="DM Sans" font-size="11" font-weight="600" fill="#6B9E78">Sí ↓</text>
+<rect x="600" y="678" width="200" height="36" rx="6" fill="#F0F7F2" stroke="#6B9E78" stroke-width="1.5"/>
+<text x="700" y="700" font-family="DM Sans" font-size="11" font-weight="500" fill="#4A7A57" text-anchor="middle">Proceder al cierre ✓</text>
+
+<!-- No → revisión adicional -->
+<line x1="820" y1="620" x2="892" y2="620" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ar)"/>
+<text x="854" y="612" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">No</text>
+<g class="nr" data-tip="Si el dealer reporta problemas para instalar el software se realiza una revisión adicional de la estructura en IVS NG, verificando orden de programación y compatibilidad.">
+  <rect x="894" y="590" width="146" height="60" rx="6" fill="#FDF0F0" stroke="#C47070" stroke-width="2"/>
+  <text x="967" y="612" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">Revisión</text>
+  <text x="967" y="630" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">adicional</text>
+  <text x="967" y="644" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">Estructura + orden</text>
+</g>
+<!-- loop back to P4 -->
+<path d="M 967 650 L 967 740 L 530 740 L 530 532 L 420 532" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#ar)"/>
+<text x="748" y="735" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">Regresar a corrección</text>
+
+<!-- ── NOTE 48hrs ── -->
+<rect x="548" y="770" width="492" height="100" rx="7" fill="#FDF5F5" stroke="#E8CECE" stroke-width="1"/>
+<text x="794" y="794" font-family="DM Sans" font-size="11" font-weight="600" fill="#B87878" text-anchor="middle">⚠ Nota — Concerns</text>
+<text x="794" y="814" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">El tiempo máximo de resolución de un Concern es de 48 horas.</text>
+<text x="794" y="832" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">La gestión del tiempo es tan crítica como la precisión técnica:</text>
+<text x="794" y="850" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">cada hora define si se resuelve antes de la entrega al cliente.</text>
+
+</svg>
+</div>
+
+<div class="tooltip" id="tt"></div>
+<script>
+  const tt = document.getElementById('tt');
+  document.querySelectorAll('[data-tip]').forEach(n => {
+    n.style.cursor = 'pointer';
+    n.addEventListener('mouseenter', () => { tt.textContent = n.dataset.tip; tt.classList.add('on'); });
+    n.addEventListener('mousemove', e => {
+      let x = e.clientX + 14, y = e.clientY + 14;
+      if (x + 250 > window.innerWidth) x = e.clientX - 260;
+      if (y + 80 > window.innerHeight) y = e.clientY - 80;
+      tt.style.left = x + 'px'; tt.style.top = y + 'px';
+    });
+    n.addEventListener('mouseleave', () => tt.classList.remove('on'));
+  });
+</script>
 </body>
 </html>

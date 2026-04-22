@@ -3,308 +3,292 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagrama 1 – Ciclo de Vida del Software Automotriz</title>
+<title>Ciclo de Vida del Software Automotriz</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --charcoal: #2C2C2C;
-    --charcoal-mid: #3E3E3E;
-    --charcoal-light: #5A5A5A;
-    --rose: #D4A5A5;
-    --rose-dark: #B87878;
-    --rose-pale: #F5EAEA;
-    --rose-mid: #E8CECE;
-    --gold: #C9A84C;
-    --gold-light: #E8D49A;
-    --gold-pale: #FAF5E4;
-    --cream: #FDF8F4;
-    --white: #FFFFFF;
-    --reject-bg: #FDF0F0;
-    --reject-border: #C47A7A;
-    --reject-text: #8B3A3A;
-    --font-display: 'Cormorant Garamond', serif;
-    --font-body: 'DM Sans', sans-serif;
+    --rose:    #D4A0A0;
+    --rose-dk: #B87878;
+    --gold:    #C9A84C;
+    --charcoal:#2C2C2C;
+    --gray:    #555555;
+    --lgray:   #F7F3F3;
+    --white:   #FFFFFF;
+    --green:   #6B9E78;
+    --red:     #C47070;
+    --blue:    #7A9BBF;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--charcoal); }
 
-  body {
-    background: var(--cream);
-    font-family: var(--font-body);
-    min-height: 100vh;
-    padding: 48px 24px 64px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .header {
+    background: var(--charcoal);
+    padding: 20px 40px 16px;
+    border-bottom: 4px solid var(--rose);
+    display: flex; align-items: baseline; gap: 20px;
   }
+  .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--white); }
+  .header p  { font-size: 12px; color: var(--rose); letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
 
-  header { text-align: center; margin-bottom: 52px; }
-
-  .header-ornament {
-    display: flex; align-items: center; justify-content: center;
-    gap: 12px; margin-bottom: 18px;
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 20px;
+    padding: 10px 40px; background: var(--lgray);
+    border-bottom: 1px solid #E8DADA; align-items: center;
   }
-  .ornament-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
-  .ornament-line.right { background: linear-gradient(90deg, var(--gold), transparent); }
-  .ornament-diamond { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--gray); font-weight: 500; }
+  .lb { width: 18px; height: 18px; border-radius: 3px; flex-shrink: 0; }
+  .ld { width: 14px; height: 14px; transform: rotate(45deg); flex-shrink: 0; border-radius: 2px; }
 
-  .header-label {
-    font-size: 10px; font-weight: 500; letter-spacing: 4px;
-    text-transform: uppercase; color: var(--gold); margin-bottom: 10px;
+  .diagram-wrap { padding: 32px 40px 40px; overflow: auto; }
+  svg { display: block; margin: 0 auto; }
+
+  .np:hover rect  { filter: drop-shadow(0 3px 10px rgba(180,120,120,0.3)); cursor: pointer; }
+  .nv:hover rect  { filter: drop-shadow(0 3px 10px rgba(122,155,191,0.3)); cursor: pointer; }
+  .nd:hover polygon { filter: drop-shadow(0 3px 10px rgba(201,168,76,0.3)); cursor: pointer; }
+
+  .tooltip {
+    position: fixed; background: var(--charcoal); color: var(--white);
+    padding: 9px 13px; border-radius: 7px; font-size: 12px;
+    max-width: 240px; line-height: 1.5; pointer-events: none;
+    opacity: 0; transition: opacity 0.15s; z-index: 100;
+    border-left: 3px solid var(--rose);
   }
+  .tooltip.on { opacity: 1; }
 
-  header h1 {
-    font-family: var(--font-display); font-size: 28px; font-weight: 700;
-    color: var(--charcoal); line-height: 1.2; margin-bottom: 8px;
+  @media print {
+    @page { size: A4 landscape; margin: 10mm; }
+    .header, .legend { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .tooltip { display: none; }
   }
-
-  header p { font-size: 13px; color: var(--charcoal-light); font-weight: 300; }
-
-  .diagram {
-    display: flex; flex-direction: column; align-items: center;
-    width: 100%; max-width: 560px;
-  }
-
-  .node { width: 100%; border-radius: 4px; padding: 16px 22px; animation: fadeDown 0.5s ease both; }
-
-  .node-process { background: var(--charcoal); border-left: 3px solid var(--gold); }
-  .node-process .node-number { font-size: 9px; font-weight: 500; color: var(--gold-light); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
-  .node-process .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 5px; line-height: 1.3; }
-  .node-process .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
-
-  .node-highlight { background: var(--charcoal-mid); border-left: 3px solid var(--rose-dark); }
-  .node-highlight .node-number { font-size: 9px; font-weight: 500; color: var(--rose); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 5px; }
-  .node-highlight .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--rose-mid); margin-bottom: 5px; line-height: 1.3; }
-  .node-highlight .node-desc { font-size: 11.5px; color: #AAAAAA; font-weight: 300; line-height: 1.6; }
-
-  .node-decision {
-    background: var(--rose-pale); border: 1.5px solid var(--rose-dark);
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-    width: 210px; height: 88px;
-    display: flex; align-items: center; justify-content: center;
-    align-self: center; padding: 0;
-  }
-  .node-decision .node-title { font-size: 11px; font-weight: 600; color: var(--rose-dark); text-align: center; padding: 0 36px; line-height: 1.4; }
-
-  .node-reject { background: var(--reject-bg); border-left: 3px solid var(--reject-border); border-radius: 4px; padding: 12px 16px; width: 100%; }
-  .node-reject .node-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--reject-text); margin-bottom: 3px; }
-  .node-reject .node-desc { font-size: 11px; color: #A05050; font-weight: 300; line-height: 1.5; }
-
-  .node-start {
-    background: linear-gradient(135deg, var(--rose-dark), var(--gold));
-    border-radius: 40px; width: 200px; align-self: center;
-    text-align: center; padding: 14px 28px;
-    box-shadow: 0 4px 20px rgba(201,168,76,0.25);
-  }
-  .node-start .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 3px; }
-
-  .node-end {
-    background: var(--charcoal); border: 1.5px solid var(--gold);
-    border-radius: 40px; width: 200px; align-self: center;
-    text-align: center; padding: 14px 28px;
-  }
-  .node-end .node-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--gold); letter-spacing: 3px; }
-
-  .arrow { display: flex; flex-direction: column; align-items: center; }
-  .arrow-line { width: 1.5px; height: 26px; background: var(--gold); opacity: 0.7; }
-  .arrow-head { width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 9px solid var(--gold); opacity: 0.8; }
-
-  .branch-row { display: flex; width: 100%; justify-content: space-between; align-items: flex-start; gap: 10px; }
-  .branch-col { flex: 1; display: flex; flex-direction: column; align-items: center; }
-
-  .branch-label { font-size: 9px; font-weight: 600; letter-spacing: 2.5px; padding: 3px 10px; border-radius: 3px; margin-bottom: 6px; text-transform: uppercase; }
-  .label-yes { background: var(--rose-pale); color: var(--rose-dark); border: 1px solid var(--rose-dark); }
-  .label-no { background: var(--reject-bg); color: var(--reject-text); border: 1px solid var(--reject-border); }
-
-  .ivs-box {
-    border: 1.5px dashed var(--rose); border-radius: 6px;
-    padding: 6px 14px 16px; width: 100%; position: relative;
-    background: rgba(212,165,165,0.04);
-  }
-  .ivs-box-label {
-    position: absolute; top: -11px; left: 16px;
-    background: var(--cream); font-size: 9px; font-weight: 500;
-    color: var(--rose-dark); letter-spacing: 2.5px; padding: 0 8px; text-transform: uppercase;
-  }
-
-  .legend { display: flex; gap: 18px; margin-top: 44px; flex-wrap: wrap; justify-content: center; }
-  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--charcoal-light); }
-  .legend-box { width: 14px; height: 14px; border-radius: 2px; flex-shrink: 0; }
-  .legend-diamond { width: 12px; height: 12px; background: var(--rose-pale); border: 1.5px solid var(--rose-dark); transform: rotate(45deg); flex-shrink: 0; }
-
-  footer { margin-top: 48px; display: flex; align-items: center; gap: 12px; font-size: 10px; color: var(--charcoal-light); letter-spacing: 2px; text-transform: uppercase; }
-  .footer-line { width: 40px; height: 1px; background: var(--gold); opacity: 0.5; }
-
-  @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-label">Figura 2 — Diagrama de Flujo</div>
-  <div class="header-ornament">
-    <div class="ornament-line"></div>
-    <div class="ornament-diamond"></div>
-    <div class="ornament-line right"></div>
-  </div>
+<div class="header">
   <h1>Ciclo de Vida del Software Automotriz</h1>
-  <p>Desde el desarrollo en el proveedor hasta la instalación en el vehículo</p>
-</header>
-
-<div class="diagram">
-
-  <div class="node node-start"><div class="node-title">INICIO</div></div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <div class="node node-process">
-    <div class="node-number">Etapa 01 — Proveedor</div>
-    <div class="node-title">Definición de requerimientos y diseño</div>
-    <div class="node-desc">El proveedor Tier 1/2 recibe los requerimientos funcionales y técnicos del OEM y define la arquitectura del software del módulo ECU.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <div class="node node-process">
-    <div class="node-number">Etapa 02 — Proveedor</div>
-    <div class="node-title">Implementación y pruebas internas</div>
-    <div class="node-desc">Desarrollo del código embebido, ejecución de pruebas unitarias, de integración y de sistema conforme a Automotive SPICE.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <div class="node node-process">
-    <div class="node-number">Etapa 03 — Proveedor → OEM</div>
-    <div class="node-title">Generación y entrega de deliverables</div>
-    <div class="node-desc">El proveedor prepara el paquete completo: archivo de calibración (.hex/.bin), Release Notes, checksum, metadata técnica y documentación de compatibilidad.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- IVS BOX -->
-  <div class="ivs-box">
-    <span class="ivs-box-label">Área de IVS Engineering — Responsabilidad del proyecto</span>
-
-    <div class="arrow" style="margin-top:14px"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-    <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-      <div class="node-decision"><div class="node-title">¿Deliverables completos y conformes?</div></div>
-      <div class="branch-row" style="margin-top:8px">
-        <div class="branch-col">
-          <div class="branch-label label-no">NO</div>
-          <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-          <div class="node node-reject">
-            <div class="node-title">Rechazo y notificación</div>
-            <div class="node-desc">Se notifica al proveedor con observaciones. El paquete regresa a Etapa 03 para corrección.</div>
-          </div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-label label-yes">SÍ</div>
-          <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-          <div class="node node-highlight" style="width:100%">
-            <div class="node-number">Etapa 04 — IVS Engineering</div>
-            <div class="node-title">Creación de estructura en IVS</div>
-            <div class="node-desc">Registro en la plataforma IVS: asignación al módulo ECU, configuración de versiones, relaciones entre módulos y atributos técnicos.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="arrow" style="margin-top:6px"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-    <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-      <div class="node-decision"><div class="node-title">¿Estructura válida e íntegra?</div></div>
-      <div class="branch-row" style="margin-top:8px">
-        <div class="branch-col">
-          <div class="branch-label label-no">NO</div>
-          <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-          <div class="node node-reject">
-            <div class="node-title">Corrección de estructura</div>
-            <div class="node-desc">Se identifican y corrigen errores en IVS. Se documenta la causa raíz y se genera ticket interno.</div>
-          </div>
-        </div>
-        <div class="branch-col">
-          <div class="branch-label label-yes">SÍ</div>
-          <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-          <div class="node node-highlight" style="width:100%">
-            <div class="node-number">Etapa 05 — IVS Engineering</div>
-            <div class="node-title">Validación de calidad y aprobación</div>
-            <div class="node-desc">Revisión de consistencia entre versiones y conformidad con ISO 26262. Aprobación formal del IVS Engineer responsable.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="arrow" style="margin-top:6px"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-    <div class="node node-highlight">
-      <div class="node-number">Etapa 06 — IVS Engineering</div>
-      <div class="node-title">Publicación en plataforma IVS</div>
-      <div class="node-desc">El software se publica en la biblioteca central de IVS y queda disponible para distribución a la red global de dealers y centros de servicio.</div>
-    </div>
-  </div>
-
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <div class="node node-process">
-    <div class="node-number">Etapa 07 — Red de Distribución</div>
-    <div class="node-title">Distribución a dealers y centros de servicio</div>
-    <div class="node-desc">El software se distribuye a la red global mediante descarga directa desde IVS o mediante actualizaciones OTA para vehículos en campo.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <div class="node node-process">
-    <div class="node-number">Etapa 08 — Dealer / Vehículo</div>
-    <div class="node-title">Instalación en el vehículo</div>
-    <div class="node-desc">El dealer o el sistema OTA instala el software en el módulo ECU. Se realizan verificaciones de diagnóstico post-instalación.</div>
-  </div>
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-
-  <!-- Decision 3 -->
-  <div style="display:flex;flex-direction:column;align-items:center;width:100%">
-    <div class="node-decision"><div class="node-title">¿Falla detectada en campo?</div></div>
-    <div class="branch-row" style="margin-top:8px">
-      <div class="branch-col">
-        <div class="branch-label label-no" style="background:var(--reject-bg);color:var(--reject-text);border-color:var(--reject-border)">SÍ</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-reject">
-          <div class="node-title">Generación de ticket en JIRA</div>
-          <div class="node-desc">IVS Engineering analiza, corrige la estructura y repite el ciclo desde Etapa 04.</div>
-        </div>
-      </div>
-      <div class="branch-col">
-        <div class="branch-label label-yes">NO</div>
-        <div class="arrow"><div class="arrow-line" style="height:14px"></div><div class="arrow-head"></div></div>
-        <div class="node node-process" style="width:100%;border-left-color:var(--rose-dark)">
-          <div class="node-title" style="font-size:13px">Software operando correctamente</div>
-          <div class="node-desc">Proceso de liberación concluido exitosamente.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="arrow"><div class="arrow-line"></div><div class="arrow-head"></div></div>
-  <div class="node node-end"><div class="node-title">FIN</div></div>
-
+  <p>IVS Engineering · Weldmation de México</p>
 </div>
 
 <div class="legend">
-  <div class="legend-item">
-    <div class="legend-box" style="background:var(--charcoal);border-left:3px solid var(--gold)"></div>
-    Etapa del proceso
-  </div>
-  <div class="legend-item">
-    <div class="legend-box" style="background:var(--charcoal-mid);border-left:3px solid var(--rose-dark)"></div>
-    Responsabilidad IVS Engineering
-  </div>
-  <div class="legend-item"><div class="legend-diamond"></div> Decisión / validación</div>
-  <div class="legend-item">
-    <div class="legend-box" style="background:var(--reject-bg);border-left:3px solid var(--reject-border)"></div>
-    Rechazo / corrección
-  </div>
+  <div class="legend-item"><div class="lb" style="border:2px solid #B87878;background:white;"></div>Etapa del proceso</div>
+  <div class="legend-item"><div class="lb" style="border:2px solid #7A9BBF;background:#F0F5FA;"></div>Responsabilidad IVS Engineering</div>
+  <div class="legend-item"><div class="ld" style="background:#C9A84C;"></div>Punto de decisión</div>
+  <div class="legend-item"><div class="lb" style="border:2px solid #C47070;background:#FDF0F0;"></div>Corrección / Rechazo</div>
+  <div class="legend-item"><div class="lb" style="border:2px solid #6B9E78;background:#F0F7F2;"></div>Resultado exitoso</div>
 </div>
 
-<footer>
-  <div class="footer-line"></div>
-  Figura 2 &nbsp;·&nbsp; Reporte de Residencias Profesionales &nbsp;·&nbsp; IVS Engineering
-  <div class="footer-line"></div>
-</footer>
+<div class="diagram-wrap">
+<svg width="1060" height="900" viewBox="0 0 1060 900">
+<defs>
+  <marker id="a"  markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#555"/></marker>
+  <marker id="ar" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#C47070"/></marker>
+  <marker id="ag" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#6B9E78"/></marker>
+  <marker id="ab" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,9 3,0 6" fill="#7A9BBF"/></marker>
+</defs>
 
+<!-- ── COLUMN BACKGROUNDS ── -->
+<rect x="20"  y="10" width="500" height="880" rx="8" fill="#FDFAFA" stroke="#EAD8D8" stroke-width="1"/>
+<rect x="540" y="10" width="500" height="880" rx="8" fill="#F9FAFB" stroke="#D8E2EA" stroke-width="1"/>
+<text x="270" y="32" font-family="DM Sans" font-size="11" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="1">FLUJO PRINCIPAL</text>
+<text x="790" y="32" font-family="DM Sans" font-size="11" font-weight="600" fill="#7A9BBF" text-anchor="middle" letter-spacing="1">VALIDACIONES Y CORRECCIONES</text>
+
+<!-- IVS zone indicator left -->
+<rect x="28" y="310" width="484" height="296" rx="6" fill="none" stroke="#7A9BBF" stroke-width="1.5" stroke-dasharray="6,3"/>
+<text x="48" y="328" font-family="DM Sans" font-size="10" font-weight="600" fill="#7A9BBF" letter-spacing="0.5">RESPONSABILIDAD IVS ENGINEERING</text>
+
+<!-- ════════════════════════════════
+     LEFT — MAIN FLOW
+     ════════════════════════════════ -->
+
+<!-- INICIO -->
+<ellipse cx="270" cy="62" rx="60" ry="24" fill="#2C2C2C"/>
+<text x="270" y="62" font-family="DM Sans" font-size="13" font-weight="600" fill="white" text-anchor="middle" dominant-baseline="middle">INICIO</text>
+<line x1="270" y1="86" x2="270" y2="108" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- E1: Proveedor — Requerimientos -->
+<g class="np" data-tip="El proveedor define los requerimientos del software y realiza el diseño arquitectónico del módulo ECU conforme a las especificaciones del OEM.">
+  <rect x="120" y="110" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="131" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">ETAPA 01 — PROVEEDOR</text>
+  <text x="270" y="150" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Definición de requerimientos</text>
+  <text x="270" y="167" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">y diseño arquitectónico</text>
+</g>
+<line x1="270" y1="174" x2="270" y2="196" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- E2: Proveedor — Implementación -->
+<g class="np" data-tip="El proveedor implementa el código del software embebido, ejecuta pruebas unitarias e integración interna antes de generar los entregables para el OEM.">
+  <rect x="120" y="198" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="219" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">ETAPA 02 — PROVEEDOR</text>
+  <text x="270" y="238" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Implementación y pruebas</text>
+  <text x="270" y="255" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">internas del software</text>
+</g>
+<line x1="270" y1="262" x2="270" y2="284" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- E3: Entrega deliverables -->
+<g class="np" data-tip="El proveedor genera y entrega los 5 deliverables obligatorios: Concern en WERS, SW Files (.vbf), DID Reports, Release Notes y Part II (.mdx).">
+  <rect x="120" y="286" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="307" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">ETAPA 03 — PROVEEDOR → OEM</text>
+  <text x="270" y="326" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Generación y entrega</text>
+  <text x="270" y="343" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">de deliverables</text>
+</g>
+<line x1="270" y1="350" x2="270" y2="372" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- E4: IVS — Creación estructura -->
+<g class="nv" data-tip="IVS Engineering recibe los deliverables, valida su completitud y construye la estructura jerárquica de Placeholders y DIDs en IVS NG conforme al SWAD.">
+  <rect x="120" y="374" width="300" height="64" rx="7" fill="#F0F5FA" stroke="#7A9BBF" stroke-width="2"/>
+  <text x="270" y="395" font-family="DM Sans" font-size="10" font-weight="600" fill="#7A9BBF" text-anchor="middle" letter-spacing="0.5">ETAPA 04 — IVS ENGINEERING</text>
+  <text x="270" y="414" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Creación de estructura en IVS</text>
+  <text x="270" y="431" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">Placeholders y DIDs según SWAD</text>
+</g>
+<line x1="270" y1="438" x2="270" y2="460" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- E5: IVS — Validación -->
+<g class="nv" data-tip="Se aplican las tres capas de control de calidad: validación de entregables, verificación de estructura y revisión pre-freeze (Part II, OTA Capable, Signed By: IVS).">
+  <rect x="120" y="462" width="300" height="64" rx="7" fill="#F0F5FA" stroke="#7A9BBF" stroke-width="2"/>
+  <text x="270" y="483" font-family="DM Sans" font-size="10" font-weight="600" fill="#7A9BBF" text-anchor="middle" letter-spacing="0.5">ETAPA 05 — IVS ENGINEERING</text>
+  <text x="270" y="502" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Validación de calidad</text>
+  <text x="270" y="519" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">y aprobación pre-freeze</text>
+</g>
+<line x1="270" y1="526" x2="270" y2="548" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- E6: IVS — Publicación -->
+<g class="nv" data-tip="Se ejecuta el freeze. La estructura queda publicada y bloqueada en IVS NG. Todos los DIDs aparecen marcados con el sufijo (frz).">
+  <rect x="120" y="550" width="300" height="64" rx="7" fill="#FDF5F5" stroke="#D4A0A0" stroke-width="3"/>
+  <text x="270" y="571" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">ETAPA 06 — IVS ENGINEERING</text>
+  <text x="270" y="590" font-family="DM Sans" font-size="13" font-weight="600" fill="#B87878" text-anchor="middle">Publicación en IVS NG</text>
+  <text x="270" y="607" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">Freeze · DIDs marcados (frz)</text>
+</g>
+<line x1="270" y1="614" x2="270" y2="636" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- E7: Distribución -->
+<g class="np" data-tip="El software publicado se distribuye a la red global de dealers y centros de servicio autorizados de Ford Motor Company. Si OTA Capable está activo, también se distribuye de forma remota.">
+  <rect x="120" y="638" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="659" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">ETAPA 07 — RED DE DISTRIBUCIÓN</text>
+  <text x="270" y="678" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Distribución a dealers</text>
+  <text x="270" y="695" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">y centros de servicio</text>
+</g>
+<line x1="270" y1="702" x2="270" y2="724" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- E8: Instalación -->
+<g class="np" data-tip="El dealer instala el software en el vehículo siguiendo el orden de programación definido en el SWAD: Bootloader → Strategy → Configuration.">
+  <rect x="120" y="726" width="300" height="64" rx="7" fill="white" stroke="#B87878" stroke-width="2"/>
+  <text x="270" y="747" font-family="DM Sans" font-size="10" font-weight="600" fill="#B87878" text-anchor="middle" letter-spacing="0.5">ETAPA 08 — DEALER / VEHÍCULO</text>
+  <text x="270" y="766" font-family="DM Sans" font-size="13" font-weight="600" fill="#2C2C2C" text-anchor="middle">Instalación en el vehículo</text>
+  <text x="270" y="783" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">Bootloader → Strategy → Configuration</text>
+</g>
+<line x1="270" y1="790" x2="270" y2="812" stroke="#555" stroke-width="2" marker-end="url(#a)"/>
+
+<!-- FIN -->
+<g>
+  <rect x="120" y="814" width="300" height="50" rx="7" fill="#F0F7F2" stroke="#6B9E78" stroke-width="2"/>
+  <text x="270" y="835" font-family="DM Sans" font-size="10" font-weight="600" fill="#6B9E78" text-anchor="middle" letter-spacing="0.5">RESULTADO</text>
+  <text x="270" y="852" font-family="DM Sans" font-size="13" font-weight="600" fill="#4A7A57" text-anchor="middle">Software operando correctamente</text>
+</g>
+
+<!-- ════════════════════════════════
+     RIGHT — VALIDATIONS
+     ════════════════════════════════ -->
+
+<!-- ── DECISION 1: Deliverables completos? (from E3) ── -->
+<line x1="420" y1="318" x2="538" y2="318" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#a)"/>
+<text x="479" y="310" font-family="DM Sans" font-size="10" font-weight="600" fill="#C9A84C" text-anchor="middle">Validar</text>
+
+<g class="nd" data-tip="Se verifica que el proveedor entregó los 5 obligatorios: Concern en WERS, SW Files (.vbf), DID Reports, Release Notes y Part II (.mdx).">
+  <polygon points="700,282 820,318 700,354 580,318" fill="white" stroke="#C9A84C" stroke-width="2"/>
+  <text x="700" y="310" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">¿Deliverables</text>
+  <text x="700" y="328" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">completos?</text>
+</g>
+
+<!-- Sí -->
+<line x1="700" y1="354" x2="700" y2="374" stroke="#6B9E78" stroke-width="1.5" marker-end="url(#ag)"/>
+<text x="716" y="368" font-family="DM Sans" font-size="11" font-weight="600" fill="#6B9E78">Sí ↓</text>
+<rect x="600" y="376" width="200" height="36" rx="6" fill="#F0F7F2" stroke="#6B9E78" stroke-width="1.5"/>
+<text x="700" y="398" font-family="DM Sans" font-size="11" font-weight="500" fill="#4A7A57" text-anchor="middle">Continuar proceso ✓</text>
+
+<!-- No → reject -->
+<line x1="820" y1="318" x2="892" y2="318" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ar)"/>
+<text x="854" y="310" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">No</text>
+<g class="nv" data-tip="El paquete se rechaza. Se notifica formalmente al proveedor con observaciones y se registra en JIRA. El proceso se detiene hasta recibir el paquete corregido.">
+  <rect x="894" y="288" width="146" height="60" rx="6" fill="#FDF0F0" stroke="#C47070" stroke-width="2"/>
+  <text x="967" y="310" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">Rechazo al</text>
+  <text x="967" y="328" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">proveedor</text>
+  <text x="967" y="343" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">Notificación + JIRA</text>
+</g>
+<!-- loop back arrow -->
+<path d="M 967 348 L 967 240 L 420 240" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#ar)"/>
+<text x="780" y="232" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">Reenvío corregido</text>
+
+<!-- ── DECISION 2: Estructura válida? (from E4/E5) ── -->
+<line x1="420" y1="494" x2="538" y2="494" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#a)"/>
+<text x="479" y="486" font-family="DM Sans" font-size="10" font-weight="600" fill="#C9A84C" text-anchor="middle">Validar</text>
+
+<g class="nd" data-tip="Se verifica la jerarquía correcta de Placeholders, la asignación de DIDs en BOM Management y la compatibilidad entre módulos en la red CAN Bus.">
+  <polygon points="700,458 820,494 700,530 580,494" fill="white" stroke="#C9A84C" stroke-width="2"/>
+  <text x="700" y="486" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">¿Estructura</text>
+  <text x="700" y="504" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">válida e íntegra?</text>
+</g>
+
+<!-- Sí -->
+<line x1="700" y1="530" x2="700" y2="550" stroke="#6B9E78" stroke-width="1.5" marker-end="url(#ag)"/>
+<text x="716" y="544" font-family="DM Sans" font-size="11" font-weight="600" fill="#6B9E78">Sí ↓</text>
+<rect x="600" y="552" width="200" height="36" rx="6" fill="#F0F7F2" stroke="#6B9E78" stroke-width="1.5"/>
+<text x="700" y="574" font-family="DM Sans" font-size="11" font-weight="500" fill="#4A7A57" text-anchor="middle">Proceder al freeze ✓</text>
+
+<!-- No → correct -->
+<line x1="820" y1="494" x2="892" y2="494" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ar)"/>
+<text x="854" y="486" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">No</text>
+<g class="nv" data-tip="Se corrige la estructura en IVS NG: se revisan los DIDs asignados, la jerarquía de Placeholders y la compatibilidad CAN Bus hasta que la validación sea exitosa.">
+  <rect x="894" y="464" width="146" height="60" rx="6" fill="#FDF0F0" stroke="#C47070" stroke-width="2"/>
+  <text x="967" y="486" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">Corregir</text>
+  <text x="967" y="504" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">estructura</text>
+  <text x="967" y="518" font-family="DM Sans" font-size="10" fill="#555" text-anchor="middle">Revisar SWAD</text>
+</g>
+
+<!-- ── DECISION 3: Falla en campo? (from E8) ── -->
+<line x1="420" y1="758" x2="538" y2="758" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#a)"/>
+<text x="479" y="750" font-family="DM Sans" font-size="10" font-weight="600" fill="#C9A84C" text-anchor="middle">Monitoreo</text>
+
+<g class="nd" data-tip="Tras la instalación se monitorea el comportamiento del software. Si se detecta una falla se genera un ticket en JIRA: Spotcheck si el vehículo está en planta, Concern si ya tiene propietario.">
+  <polygon points="700,722 820,758 700,794 580,758" fill="white" stroke="#C9A84C" stroke-width="2"/>
+  <text x="700" y="750" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">¿Falla detectada</text>
+  <text x="700" y="768" font-family="DM Sans" font-size="12" font-weight="600" fill="#2C2C2C" text-anchor="middle">en campo?</text>
+</g>
+
+<!-- No → ok -->
+<line x1="700" y1="794" x2="700" y2="814" stroke="#6B9E78" stroke-width="1.5" marker-end="url(#ag)"/>
+<text x="716" y="808" font-family="DM Sans" font-size="11" font-weight="600" fill="#6B9E78">No ↓</text>
+<rect x="600" y="816" width="200" height="36" rx="6" fill="#F0F7F2" stroke="#6B9E78" stroke-width="1.5"/>
+<text x="700" y="838" font-family="DM Sans" font-size="11" font-weight="500" fill="#4A7A57" text-anchor="middle">Proceso concluido ✓</text>
+
+<!-- Sí → ticket JIRA -->
+<line x1="820" y1="758" x2="892" y2="758" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#ar)"/>
+<text x="854" y="750" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">Sí</text>
+<g class="nv" data-tip="Se genera un ticket en JIRA. Spotcheck si el vehículo aún está en planta (EOL). Concern si el vehículo ya tiene propietario — tiempo máximo de resolución: 48 horas.">
+  <rect x="894" y="724" width="146" height="68" rx="6" fill="#FDF0F0" stroke="#C47070" stroke-width="2"/>
+  <text x="967" y="746" font-family="DM Sans" font-size="12" font-weight="600" fill="#C47070" text-anchor="middle">Ticket en JIRA</text>
+  <text x="967" y="764" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">Spotcheck (EOL)</text>
+  <text x="967" y="780" font-family="DM Sans" font-size="11" fill="#555" text-anchor="middle">Concern (48 hrs)</text>
+</g>
+<!-- loop back to IVS -->
+<path d="M 967 792 L 967 860 L 530 860 L 530 411 L 420 411" stroke="#C47070" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#ar)"/>
+<text x="750" y="855" font-family="DM Sans" font-size="10" font-weight="600" fill="#C47070" text-anchor="middle">Regresa a IVS Engineering para corrección</text>
+
+</svg>
+</div>
+
+<div class="tooltip" id="tt"></div>
+<script>
+  const tt = document.getElementById('tt');
+  document.querySelectorAll('[data-tip]').forEach(n => {
+    n.style.cursor = 'pointer';
+    n.addEventListener('mouseenter', () => { tt.textContent = n.dataset.tip; tt.classList.add('on'); });
+    n.addEventListener('mousemove', e => {
+      let x = e.clientX + 14, y = e.clientY + 14;
+      if (x + 250 > window.innerWidth) x = e.clientX - 260;
+      if (y + 80 > window.innerHeight) y = e.clientY - 80;
+      tt.style.left = x + 'px'; tt.style.top = y + 'px';
+    });
+    n.addEventListener('mouseleave', () => tt.classList.remove('on'));
+  });
+</script>
 </body>
 </html>
